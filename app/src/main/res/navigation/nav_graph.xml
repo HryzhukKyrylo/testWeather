@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/startFragment">
+
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.example.testweather.ui.StartFragment"
+        android:label="fragment_start"
+        tools:layout="@layout/fragment_start" >
+        <action
+            android:id="@+id/action_startFragment_to_weatherScreenFragment"
+            app:destination="@id/weatherScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/weatherScreenFragment"
+        android:name="com.example.testweather.ui.WeatherScreenFragment"
+        android:label="fragment_weather_screen"
+        tools:layout="@layout/fragment_weather_screen" >
+        <action
+            android:id="@+id/action_weatherScreenFragment_to_settingsScreenFragment"
+            app:destination="@id/settingsScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsScreenFragment"
+        android:name="com.example.testweather.ui.SettingsScreenFragment"
+        android:label="fragment_settings_screen"
+        tools:layout="@layout/fragment_settings_screen" >
+        <action
+            android:id="@+id/action_settingsScreenFragment_to_searchScreenFragment"
+            app:destination="@id/searchScreenFragment" />
+        <action
+            android:id="@+id/action_settingsScreenFragment_to_weatherScreenFragment"
+            app:destination="@id/weatherScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchScreenFragment"
+        android:name="com.example.testweather.ui.SearchScreenFragment"
+        android:label="fragment_search_screen"
+        tools:layout="@layout/fragment_search_screen" >
+        <action
+            android:id="@+id/action_searchScreenFragment_to_settingsScreenFragment"
+            app:destination="@id/settingsScreenFragment" />
+    </fragment>
+</navigation>
