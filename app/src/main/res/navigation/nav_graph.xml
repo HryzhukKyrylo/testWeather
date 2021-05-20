@@ -20,8 +20,12 @@
         android:label="fragment_weather_screen"
         tools:layout="@layout/fragment_weather_screen" >
         <action
-            android:id="@+id/action_weatherScreenFragment_to_settingsScreenFragment"
+            android:id="@+id/navigateWeatherToSettingsScreen"
             app:destination="@id/settingsScreenFragment" />
+        <argument
+            android:name="nav_args"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
     <fragment
         android:id="@+id/settingsScreenFragment"
@@ -29,10 +33,10 @@
         android:label="fragment_settings_screen"
         tools:layout="@layout/fragment_settings_screen" >
         <action
-            android:id="@+id/action_settingsScreenFragment_to_searchScreenFragment"
+            android:id="@+id/navigateSettingsToSearchScreen"
             app:destination="@id/searchScreenFragment" />
         <action
-            android:id="@+id/action_settingsScreenFragment_to_weatherScreenFragment"
+            android:id="@+id/navigateSettingsToWeatherScreen"
             app:destination="@id/weatherScreenFragment" />
     </fragment>
     <fragment
@@ -41,7 +45,7 @@
         android:label="fragment_search_screen"
         tools:layout="@layout/fragment_search_screen" >
         <action
-            android:id="@+id/action_searchScreenFragment_to_settingsScreenFragment"
+            android:id="@+id/navigateSearchToSettingsScreen"
             app:destination="@id/settingsScreenFragment" />
     </fragment>
 </navigation>

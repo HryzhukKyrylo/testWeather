@@ -1,10 +1,11 @@
 package com.example.testweather.model
 
+import com.example.testweather.util.adapter.Item
 import com.google.gson.annotations.SerializedName
 
 
 data class WeekWeatherResponse(
-
+    var type: Int,
     @SerializedName("lat") val lat: Double,
     @SerializedName("lon") val lon: Double,
     @SerializedName("timezone") val timezone: String,
@@ -13,7 +14,9 @@ data class WeekWeatherResponse(
     @SerializedName("minutely") val minutely: List<Minutely>,
     @SerializedName("hourly") val hourly: List<Hourly>,
     @SerializedName("daily") val daily: List<Daily>
-)
+): Item {
+    override fun type(): Int = type
+}
 
 data class Hourly(
 

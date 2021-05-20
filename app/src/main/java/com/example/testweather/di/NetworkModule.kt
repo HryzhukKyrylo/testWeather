@@ -51,5 +51,4 @@ object NetworkModule {
     fun provideMapRepository(apiService: ApiService): WeatherRepository =
         WeatherRepositoryImpl(apiService)
 
-
 }

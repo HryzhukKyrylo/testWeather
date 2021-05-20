@@ -5,42 +5,50 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testweather.R
 import com.example.testweather.databinding.FragmentWeatherScreenBinding
-import com.example.testweather.ui.viewmodel.RecyclerViewModel
+import com.example.testweather.ui.viewmodel.SharedViewModel
 import com.example.testweather.util.adapter.CustomRecyclerAdapter
+import com.example.testweather.util.adapter.Item
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
     private lateinit var binding: FragmentWeatherScreenBinding
-    private lateinit var recyclerViewModel : RecyclerViewModel
-    private lateinit var recyclerAdapter : CustomRecyclerAdapter
+    private val sharedViewModel: SharedViewModel by viewModels()
+    private lateinit var recyclerAdapter: CustomRecyclerAdapter
+
+    private var screen: Int = 0
+    private val args: WeatherScreenFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentWeatherScreenBinding.inflate(inflater, container,false)
-        recyclerViewModel = RecyclerViewModel()
+    ): View {
+        screen = args.navArgs
+        binding = FragmentWeatherScreenBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
+    private fun setupRecyclerData() {
 
-    private fun setupRecyclerData(){
-        recyclerAdapter = CustomRecyclerAdapter(recyclerViewModel.getData())
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-            adapter = recyclerAdapter
-        }
+        sharedViewModel.getDailyWeather()
+        sharedViewModel.dailyWeather.observe(viewLifecycleOwner, {
+            recyclerAdapter = CustomRecyclerAdapter(listOf<Item>(it))
+            binding.recyclerView.apply {
+                layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                adapter = recyclerAdapter
+            }
+        })
+
     }
 
     override fun onResume() {
         super.onResume()
-        recyclerViewModel.setData()
         setupRecyclerData()
     }
 }
