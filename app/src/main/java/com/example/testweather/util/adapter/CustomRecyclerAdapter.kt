@@ -1,32 +1,26 @@
 package com.example.testweather.util.adapter
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testweather.R
 import com.example.testweather.const.Const
 import com.example.testweather.databinding.ItemColumnDayBinding
 import com.example.testweather.databinding.ItemDayBinding
-import com.example.testweather.databinding.RecyclerItemBinding
-import com.example.testweather.model.DailyResponse
-import com.example.testweather.model.WeekWeatherResponse
+import com.example.testweather.model.Daily
+import com.example.testweather.model.DailyWeatherResponse
 
-interface Item {
-    fun type(): Int
-}
+abstract class WeatherItem
 
 class CustomRecyclerAdapter(
-    private val itemList: List<Item>
+    private val itemList: List<WeatherItem>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class DailyViewHolder(private val binding: ItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: DailyResponse) {
+        fun bind(item: DailyWeatherResponse) {
             binding.twPressure.text = item.main.pressure.toString()
             binding.twHumidity.text = item.main.humidity.toString()
             binding.twWind.text = item.wind.speed.toString()
@@ -34,52 +28,16 @@ class CustomRecyclerAdapter(
         }
     }
 
-    class ThreeDayViewHolder(private val binding: ItemColumnDayBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun bind(item: WeekWeatherResponse) {
-            val data = java.time.format.DateTimeFormatter.ISO_INSTANT.format(
-                java.time.Instant.ofEpochSecond(item.daily[0].dt.toLong())
-            )
-                .format(java.time.Instant.ofEpochSecond(item.daily[0].dt.toLong()))
-            binding.twTextInItem.text = data
-            binding.twTextInItem.setOnClickListener {
-                Log.i("TAG_VIEW_HOLDER", "bind: $data")
-            }
-
-            when (item.daily[0].weather[0].icon) {
-                "01d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_sun)
-                "02d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudysun)
-                "03d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudy)
-                "04d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudy)
-                "09d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_rain)
-                "10d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_rain)
-                "11d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_thunder)
-                "13d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_snow)
-                "50d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_fog)
-
-                else -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudysun)
-
-            }
-//        holder.imageView?.setImageResource(images[position])
-            binding.twTempInItem.text = item.daily[0].temp.day.toString() + " 'C"
-        }
-    }
-
     class WeekViewHolder(private val binding: ItemColumnDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: WeekWeatherResponse) {
-            val data = java.time.format.DateTimeFormatter.ISO_INSTANT.format(
-                java.time.Instant.ofEpochSecond(item.daily[0].dt.toLong())
-            )
-                .format(java.time.Instant.ofEpochSecond(item.daily[0].dt.toLong()))
-            binding.twTextInItem.text = data
+        @SuppressLint("SetTextI18n")
+        fun bind(item: Daily) {
+            binding.twTextInItem.text = item.dt.toString()
             binding.twTextInItem.setOnClickListener {
-                Log.i("TAG_VIEW_HOLDER", "bind: $data")
+                Log.i("TAG_VIEW_HOLDER", "bind: $item.current.dt.toString()")
             }
 
-            when (item.daily[0].weather[0].icon) {
+            when (item.weather[0].icon) {
                 "01d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_sun)
                 "02d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudysun)
                 "03d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudy)
@@ -93,8 +51,7 @@ class CustomRecyclerAdapter(
                 else -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudysun)
 
             }
-//        holder.imageView?.setImageResource(images[position])
-            binding.twTempInItem.text = item.daily[0].temp.day.toString() + " 'C"
+            binding.twTempInItem.text = item.temp.day.toString() + " 'C"
 
         }
     }
@@ -107,35 +64,33 @@ class CustomRecyclerAdapter(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-            Const.THREE_DAY_SECTION -> ThreeDayViewHolder(
+            Const.WEEK_SECTION -> WeekViewHolder(
                 ItemColumnDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-            else -> ThreeDayViewHolder(
-                ItemColumnDayBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
-            )
+            else -> {
+                throw IllegalArgumentException("Invalid type of data")
+            }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = itemList[position] as DailyResponse
-        return when (getItemViewType(position)) {
-            Const.DAILY_SECTION -> (holder as DailyViewHolder).bind(item)
-            else -> (holder as ThreeDayViewHolder).bind(item)
+        val item = itemList[position]
+        when (holder) {
+            is DailyViewHolder -> holder.bind(item as DailyWeatherResponse)
+            is WeekViewHolder -> holder.bind(item as Daily)
         }
     }
 
     override fun getItemCount(): Int = itemList.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (itemList[position].type()) {
-            1 -> Const.DAILY_SECTION
-            3 -> Const.THREE_DAY_SECTION
-            else -> Const.WEEK_SECTION
+        val item = itemList[position]
+        return when {
+            item is DailyWeatherResponse -> Const.DAILY_SECTION
+            item is Daily -> Const.WEEK_SECTION
+            else -> throw IllegalArgumentException("Invalid type of data $position")
         }
     }
 }

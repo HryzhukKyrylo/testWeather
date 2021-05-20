@@ -1,7 +1,8 @@
 package com.example.testweather.api
 
 import com.example.testweather.BuildConfig
-import com.example.testweather.model.DailyResponse
+import com.example.testweather.model.DailyWeatherResponse
+import com.example.testweather.model.ThreeDaysWeatherResponse
 import com.example.testweather.model.WeekWeatherResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -15,12 +16,19 @@ interface ApiService {
 //        @Query("exclude") exclude: String = "daily",
         @Query("appid") appid: String = BuildConfig.API_KEY
     ): Response<WeekWeatherResponse>
+    @GET(WEEK_WEATHER)
+    suspend fun getThreeDaysWeather(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+//        @Query("exclude") exclude: String = "daily",
+        @Query("appid") appid: String = BuildConfig.API_KEY
+    ): Response<ThreeDaysWeatherResponse>
 
     @GET(DAILY_WEATHER)
     suspend fun getDailyWeather(
         @Query("q") city_name: String,
         @Query("appid") appid: String = BuildConfig.API_KEY
-    ): Response<DailyResponse>
+    ): Response<DailyWeatherResponse>
 
 
     companion object {
