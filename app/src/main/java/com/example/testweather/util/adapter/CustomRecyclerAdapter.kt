@@ -32,7 +32,14 @@ class CustomRecyclerAdapter(
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun bind(item: Daily) {
-            binding.twTextInItem.text = item.dt.toString()
+
+//            binding.twTextInItem.text = item.dt.toString()
+
+            val sdf = java.text.SimpleDateFormat("EEE, dd 'at' HH:mm:ss")
+
+            binding.twTextInItem.text =  sdf.format(item.dt)
+//            binding.twTextInItem.text =  sdf.format(1621681200)
+
             binding.twTextInItem.setOnClickListener {
                 Log.i("TAG_VIEW_HOLDER", "bind: $item.current.dt.toString()")
             }

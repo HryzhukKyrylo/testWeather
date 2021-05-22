@@ -13,14 +13,15 @@ interface ApiService {
     suspend fun getWeekWeather(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-//        @Query("exclude") exclude: String = "daily",
+        @Query("exclude") exclude: String = "minutely,alerts",
         @Query("appid") appid: String = BuildConfig.API_KEY
     ): Response<WeekWeatherResponse>
     @GET(WEEK_WEATHER)
     suspend fun getThreeDaysWeather(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-//        @Query("exclude") exclude: String = "daily",
+        @Query("exclude") exclude: String = "",
+//        @Query("exclude") exclude: String = "minutely,alerts",
         @Query("appid") appid: String = BuildConfig.API_KEY
     ): Response<ThreeDaysWeatherResponse>
 
