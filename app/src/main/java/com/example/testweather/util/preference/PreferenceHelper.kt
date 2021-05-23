@@ -5,14 +5,12 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
 object PreferenceHelper {
-    val WEATHER_FAHRENHEIT = "FAHRENHEIT"
-    val WEATHER_CELSIUS = "CELSIUS"
-    val WEATHER_DAILY = "DAILY"
-    val WEATHER_THREE_DAY = "THREE_DAY"
-    val WEATHER_WEEK = "WEEK"
-    val WEATHER_M_S = "M_S"
-    val WEATHER_M_H = "M_H"
-    val WEATHER_CITY = "CITY"
+    const val WEATHER_UNITS = "UNITS"
+    const val WEATHER_CELSIUS = "CELSIUS"
+    const val WEATHER_DAY = "DAY"
+    const val WEATHER_M_S = "M_S"
+    const val WEATHER_M_H = "M_H"
+    const val WEATHER_CITY = "CITY"
 
     fun defaultPreference(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -24,43 +22,23 @@ object PreferenceHelper {
         editMe.apply()
     }
 
-    var SharedPreferences.fahrenheit
-        get() = getString(WEATHER_FAHRENHEIT, "")
+    var SharedPreferences.units
+        get() = getString(WEATHER_UNITS, "metric")
         set(value) {
             editMe {
-                it.putString(WEATHER_FAHRENHEIT, value)
+                it.putString(WEATHER_UNITS, value)
             }
         }
 
-    var SharedPreferences.celsius
-        get() = getString(WEATHER_CELSIUS, "")
-        set(value) {
-            editMe {
-                it.putString(WEATHER_CELSIUS, value)
-            }
-        }
 
     var SharedPreferences.screen
-        get() = getInt(WEATHER_WEEK, 0)
+        get() = getInt(WEATHER_DAY, 1)
         set(value) {
             editMe {
-                it.putInt(WEATHER_WEEK, value)
+                it.putInt(WEATHER_DAY, value)
             }
         }
-    var SharedPreferences.m_s
-        get() = getString(WEATHER_M_S, "")
-        set(value) {
-            editMe {
-                it.putString(WEATHER_M_S, value)
-            }
-        }
-    var SharedPreferences.m_h
-        get() = getString(WEATHER_M_H, "")
-        set(value) {
-            editMe {
-                it.putString(WEATHER_M_H, value)
-            }
-        }
+
     var SharedPreferences.city
         get() = getString(WEATHER_CITY, "")
         set(value) {
@@ -69,20 +47,13 @@ object PreferenceHelper {
             }
         }
 
-    var SharedPreferences.clearValues
-        get() = run { }
-        set(value) {
-            editMe {
-                it.clear()
-            }
-        }
 
     // initSettings
     var SharedPreferences.fahrenheitSet
-        get() = getBoolean(WEATHER_FAHRENHEIT, false)
+        get() = getBoolean(WEATHER_UNITS, false)
         set(value) {
             editMe {
-                it.putBoolean(WEATHER_FAHRENHEIT, value)
+                it.putBoolean(WEATHER_UNITS, value)
             }
         }
 
@@ -94,13 +65,6 @@ object PreferenceHelper {
             }
         }
 
-    var SharedPreferences.screenSet
-        get() = getBoolean(WEATHER_WEEK, false)
-        set(value) {
-            editMe {
-                it.putBoolean(WEATHER_WEEK, value)
-            }
-        }
     var SharedPreferences.m_sSet
         get() = getBoolean(WEATHER_M_S, false)
         set(value) {

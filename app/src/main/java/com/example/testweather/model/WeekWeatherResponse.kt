@@ -31,7 +31,7 @@ data class Hourly(
     @SerializedName("wind_gust") val wind_gust: Double,
     @SerializedName("weather") val weather: List<Weather>,
     @SerializedName("pop") val pop: Double
-)
+) : WeatherItem()
 
 data class Feels_like(
 

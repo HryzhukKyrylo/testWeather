@@ -13,7 +13,8 @@ interface ApiService {
     suspend fun getWeekWeather(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-        @Query("exclude") exclude: String = "minutely,alerts",
+        @Query("exclude") exclude: String = "",
+        @Query("units") units: String = "",
         @Query("appid") appid: String = BuildConfig.API_KEY
     ): Response<WeekWeatherResponse>
     @GET(WEEK_WEATHER)
@@ -21,6 +22,7 @@ interface ApiService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("exclude") exclude: String = "",
+        @Query("units") units: String = "",
 //        @Query("exclude") exclude: String = "minutely,alerts",
         @Query("appid") appid: String = BuildConfig.API_KEY
     ): Response<ThreeDaysWeatherResponse>

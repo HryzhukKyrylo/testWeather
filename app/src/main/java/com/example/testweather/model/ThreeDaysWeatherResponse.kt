@@ -3,7 +3,7 @@ package com.example.testweather.model
 import com.example.testweather.util.adapter.WeatherItem
 import com.google.gson.annotations.SerializedName
 
-class ThreeDaysWeatherResponse(
+data class ThreeDaysWeatherResponse(
     @SerializedName("lat") val lat: Double,
     @SerializedName("lon") val lon: Double,
     @SerializedName("timezone") val timezone: String,

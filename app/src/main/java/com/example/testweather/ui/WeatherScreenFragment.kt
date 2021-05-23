@@ -19,6 +19,7 @@ import com.example.testweather.util.adapter.CustomRecyclerAdapter
 import com.example.testweather.util.adapter.WeatherItem
 import com.example.testweather.util.preference.PreferenceHelper
 import com.example.testweather.util.preference.PreferenceHelper.screen
+import com.example.testweather.util.preference.PreferenceHelper.units
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,6 +35,8 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
     ): View {
         prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
         sharedViewModel.screen.postValue(prefs.screen)
+//        sharedViewModel.units = prefs.units
+
         binding = FragmentWeatherScreenBinding.inflate(inflater, container, false)
         initListeners()
         return binding.root
@@ -60,7 +63,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
                         it.weather[0].main,
                         it.main.temp.toString()
                     )
-                    recyclerAdapter = CustomRecyclerAdapter(listOf<WeatherItem>(it))
+                    recyclerAdapter = CustomRecyclerAdapter(requireContext(),listOf<WeatherItem>(it))
                     binding.recyclerView.apply {
                         layoutManager =
                             LinearLayoutManager(
@@ -73,7 +76,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
                 })
             }
             Const.THREE_DAY_SECTION -> {
-                sharedViewModel.getThreeDaysWeather()
+                sharedViewModel.getThreeDaysWeather(sharedViewModel.units)
                 sharedViewModel.threeDaysWeather.observe(viewLifecycleOwner, {
                     initCardView(
                         it.timezone,
@@ -81,7 +84,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
                         it.current.weather[0].main,
                         it.current.temp.toString()
                     )
-                    recyclerAdapter = CustomRecyclerAdapter(it.daily.take(3))
+                    recyclerAdapter = CustomRecyclerAdapter(requireContext(),it.daily.take(3))
                     binding.recyclerView.apply {
                         layoutManager =
                             LinearLayoutManager(
@@ -102,7 +105,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
                         it.current.weather[0].main,
                         it.current.temp.toString()
                     )
-                    recyclerAdapter = CustomRecyclerAdapter(it.daily)
+                    recyclerAdapter = CustomRecyclerAdapter(requireContext(),it.daily)
                     binding.recyclerView.apply {
                         layoutManager =
                             LinearLayoutManager(

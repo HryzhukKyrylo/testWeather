@@ -13,21 +13,19 @@ import com.example.testweather.R
 import com.example.testweather.const.Const
 import com.example.testweather.const.Const.CUSTOM_PREF_NAME
 import com.example.testweather.ui.viewmodel.SharedViewModel
-import com.example.testweather.util.preference.PreferenceHelper.celsius
 import com.example.testweather.util.preference.PreferenceHelper.celsiusSet
 import com.example.testweather.util.preference.PreferenceHelper.citySet
 import com.example.testweather.util.preference.PreferenceHelper.customPreference
-import com.example.testweather.util.preference.PreferenceHelper.fahrenheit
 import com.example.testweather.util.preference.PreferenceHelper.fahrenheitSet
 import com.example.testweather.util.preference.PreferenceHelper.m_hSet
 import com.example.testweather.util.preference.PreferenceHelper.m_sSet
 import com.example.testweather.util.preference.PreferenceHelper.screen
+import com.example.testweather.util.preference.PreferenceHelper.units
 import kotlinx.android.synthetic.main.fragment_settings_screen.*
 
 
 class SettingsScreenFragment : Fragment() {
 
-    private var argScreen: Int = 0
     private lateinit var prefs: SharedPreferences
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -58,9 +56,8 @@ class SettingsScreenFragment : Fragment() {
         iwFahrenheit.setOnClickListener {
             iwCelsius.setImageResource(R.drawable.ic_celsius__1_)
             iwFahrenheit.setImageResource(R.drawable.ic_fahrenheit)
-            prefs.fahrenheit = "fahrenheit"
-            sharedViewModel.setFahrenheit = true
-            sharedViewModel.setCelsius = false
+            prefs.units = "imperial"
+            sharedViewModel.units = "imperial"
             // initSettings
             prefs.fahrenheitSet = true
             prefs.celsiusSet = false
@@ -68,9 +65,8 @@ class SettingsScreenFragment : Fragment() {
         iwCelsius.setOnClickListener {
             iwFahrenheit.setImageResource(R.drawable.ic_fahrenheit__1_)
             iwCelsius.setImageResource(R.drawable.ic_celsius__1___1_)
-            prefs.celsius = "celsius"
-            sharedViewModel.setFahrenheit = false
-            sharedViewModel.setCelsius = true
+            prefs.units = "metric"
+            sharedViewModel.units = "metric"
             // initSettings
             prefs.celsiusSet = true
             prefs.fahrenheitSet = false
