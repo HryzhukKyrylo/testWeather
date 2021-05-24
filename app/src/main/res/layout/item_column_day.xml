@@ -31,15 +31,16 @@
         <ImageView
             android:id="@+id/iwImageInItem"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:contentDescription="@string/image_description"
+            android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/twTempInItem"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/twTextInItem"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/ic_cloudiness"
-            android:contentDescription="@string/image_description" />
+            tools:srcCompat="@drawable/ic_cloudiness" />
 
         <TextView
             android:id="@+id/twTempInItem"

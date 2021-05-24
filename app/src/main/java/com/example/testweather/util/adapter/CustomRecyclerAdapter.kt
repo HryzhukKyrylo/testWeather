@@ -4,22 +4,29 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.testweather.R
 import com.example.testweather.const.Const
 import com.example.testweather.databinding.ItemColumnDayBinding
 import com.example.testweather.databinding.ItemDayBinding
+import com.example.testweather.databinding.ItemNameOfDayBinding
 import com.example.testweather.model.Daily
 import com.example.testweather.model.DailyWeatherResponse
+import com.example.testweather.model.HeadSection
 import com.example.testweather.model.Hourly
+import com.example.testweather.util.IconHelper
+import com.example.testweather.util.getDateHourlyString
+import com.example.testweather.util.getDateString
+import com.example.testweather.util.getSelectedData
 
 abstract class WeatherItem
 
 class CustomRecyclerAdapter(
-     val context : Context,
-     private var itemList : List<WeatherItem>
+    val context: Context,
+    private var itemList: List<WeatherItem>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private lateinit var listener: OnItemClickedListener
+
 
     class DailyViewHolder(private val binding: ItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -32,67 +39,42 @@ class CustomRecyclerAdapter(
     }
 
     class WeekViewHolder(
+        val listener: OnItemClickedListener,
         val context: Context,
-        private val binding: ItemColumnDayBinding) :
+        private val binding: ItemColumnDayBinding
+    ) :
         RecyclerView.ViewHolder(binding.root) {
+
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(item: Daily) {
-            val sdf = java.text.SimpleDateFormat("EEE, dd 'at' HH:mm:ss")
-
-            binding.twTextInItem.text = sdf.format(item.dt)
-
+            binding.twTextInItem.text = getDateString(item.dt)
             binding.twTextInItem.setOnClickListener {
-                Toast.makeText(context, "${sdf.format(item.dt)}", Toast.LENGTH_SHORT).show()
+                listener?.onEntryClicked(getSelectedData(item.dt))
             }
-
-            when (item.weather[0].icon) {
-                "01d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_sun)
-                "02d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudysun)
-                "03d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudy)
-                "04d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudy)
-                "09d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_rain)
-                "10d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_rain)
-                "11d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_thunder)
-                "13d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_snow)
-                "50d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_fog)
-
-                else -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudysun)
-
-            }
+            binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.temp.day.toString() + " 'C"
 
         }
     }
+
     class HourlyViewHolder(
-        val context: Context,
-        private val binding: ItemColumnDayBinding) :
+        private val binding: ItemColumnDayBinding
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(item: Hourly) {
-            val sdf = java.text.SimpleDateFormat("HH:mm:ss")
-
-            binding.twTextInItem.text = sdf.format(item.dt)
-
-            binding.twTextInItem.setOnClickListener {
-                Toast.makeText(context, "${sdf.format(item.dt)}", Toast.LENGTH_SHORT).show()
-            }
-
-            when (item.weather[0].icon) {
-                "01d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_sun)
-                "02d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudysun)
-                "03d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudy)
-                "04d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudy)
-                "09d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_rain)
-                "10d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_rain)
-                "11d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_thunder)
-                "13d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_snow)
-                "50d" -> binding.iwImageInItem.setImageResource(R.drawable.ic_fog)
-
-                else -> binding.iwImageInItem.setImageResource(R.drawable.ic_cloudysun)
-
-            }
+            binding.twTextInItem.text = getDateHourlyString(item.dt)
+            binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.temp.toString() + " 'C"
-
+        }
+    }
+    class DayViewHolder(
+        private val binding: ItemNameOfDayBinding
+    ) :
+        RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n", "SimpleDateFormat")
+        fun bind(item: HeadSection) {
+            binding.twDataOfDay.text = item.str
         }
     }
 
@@ -104,11 +86,24 @@ class CustomRecyclerAdapter(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-            Const.WEEK_SECTION -> WeekViewHolder(context,
+            Const.WEEK_SECTION -> WeekViewHolder(
+                listener,
+                context,
                 ItemColumnDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
+            Const.HOURLY_SECTION -> HourlyViewHolder(
+                ItemColumnDayBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+            )
+            Const.HEADER_SECTION -> DayViewHolder(
+                ItemNameOfDayBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+            )
+
             else -> {
                 throw IllegalArgumentException("Invalid type of data")
             }
@@ -134,5 +129,14 @@ class CustomRecyclerAdapter(
             item is Hourly -> Const.HOURLY_SECTION
             else -> throw IllegalArgumentException("Invalid type of data $position")
         }
+    }
+
+    fun setListener(listener: OnItemClickedListener) {
+        this.listener = listener
+    }
+
+
+    interface OnItemClickedListener {
+        fun onEntryClicked(data: String)
     }
 }

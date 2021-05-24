@@ -4,15 +4,12 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.testweather.const.Const
 import com.example.testweather.model.DailyWeatherResponse
 import com.example.testweather.model.ThreeDaysWeatherResponse
 import com.example.testweather.model.WeekWeatherResponse
 import com.example.testweather.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,24 +23,29 @@ class SharedViewModel @Inject constructor(
     val threeDaysWeather = threeDays
     val weekWeather = week
 
-    var screen = MutableLiveData<Int>()
+    private var screen = MutableLiveData<Int>()
+    val startScreen = screen
     var setSelectCity = ""
     var units: String? = null
     var setM_s = false
-    var setM_H = false
+    var setM_H = false // * 2.237
 
 
     // kyiv
     private val latKyiv = 50.4501
     private val lonKyiv = 30.5234
     private val city = "kyiv"
+    val str_c = "°C"
+    val str_f = "°F"
+
+    fun setScreen(int: Int) {
+        screen.postValue(int)
+    }
 
     fun getDailyWeather() = viewModelScope.launch {
-        weatherRepository.getDailyWeather(city).let { response ->
+        weatherRepository.getDailyWeather(city, units ?: "").let { response ->
             if (response.isSuccessful) {
-                withContext(Dispatchers.Main) {
-                    daily.postValue(response.body())
-                }
+                daily.value = response.body()
             } else {
                 Log.i("TAG_VIEW_MODEL", "getDailyWeather: ${response.errorBody().toString()}")
             }
@@ -51,11 +53,9 @@ class SharedViewModel @Inject constructor(
     }
 
     fun getWeekWeather() = viewModelScope.launch {
-        weatherRepository.getWeekWeather(latKyiv, lonKyiv).let { response ->
+        weatherRepository.getWeekWeather(latKyiv, lonKyiv, units ?: "").let { response ->
             if (response.isSuccessful) {
-                withContext(Dispatchers.Main) {
-                    week.postValue(response.body())
-                }
+                week.value = response.body()
             } else {
                 Log.i("TAG_VIEW_MODEL", "getWeekWeather: ${response.errorBody().toString()}")
             }
@@ -66,12 +66,11 @@ class SharedViewModel @Inject constructor(
         weatherRepository.getThreeDaysWeather(lat = latKyiv, lon = lonKyiv, units = units ?: "")
             .let { response ->
                 if (response.isSuccessful) {
-                    withContext(Dispatchers.Main) {
-                        threeDays.postValue(response.body())
-                    }
+                    threeDays.value = response.body()
                 } else {
                     Log.i("TAG_VIEW_MODEL", "getWeekWeather: ${response.errorBody().toString()}")
                 }
             }
     }
+    fun getHourlyWeather(){}
 }

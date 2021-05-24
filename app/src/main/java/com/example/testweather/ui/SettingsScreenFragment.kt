@@ -56,8 +56,8 @@ class SettingsScreenFragment : Fragment() {
         iwFahrenheit.setOnClickListener {
             iwCelsius.setImageResource(R.drawable.ic_celsius__1_)
             iwFahrenheit.setImageResource(R.drawable.ic_fahrenheit)
-            prefs.units = "imperial"
-            sharedViewModel.units = "imperial"
+            prefs.units = Const.FAHRENHEIT_UNITS
+            sharedViewModel.units = Const.FAHRENHEIT_UNITS
             // initSettings
             prefs.fahrenheitSet = true
             prefs.celsiusSet = false
@@ -65,9 +65,8 @@ class SettingsScreenFragment : Fragment() {
         iwCelsius.setOnClickListener {
             iwFahrenheit.setImageResource(R.drawable.ic_fahrenheit__1_)
             iwCelsius.setImageResource(R.drawable.ic_celsius__1___1_)
-            prefs.units = "metric"
-            sharedViewModel.units = "metric"
-            // initSettings
+            prefs.units = Const.CELSIUS_UNITS
+            sharedViewModel.units = Const.CELSIUS_UNITS
             prefs.celsiusSet = true
             prefs.fahrenheitSet = false
         }
@@ -81,7 +80,7 @@ class SettingsScreenFragment : Fragment() {
             twThreeDay.setTextColor(resources.getColor(R.color.black))
             twWeek.setTextColor(resources.getColor(R.color.black))
             twDay.setTextColor(resources.getColor(R.color.myBlue))
-            sharedViewModel.screen.postValue(Const.DAILY_SECTION)
+            sharedViewModel.setScreen(Const.DAILY_SECTION)
             // initSettings
             prefs.screen = Const.DAILY_SECTION
         }
@@ -89,7 +88,7 @@ class SettingsScreenFragment : Fragment() {
             twDay.setTextColor(resources.getColor(R.color.black))
             twWeek.setTextColor(resources.getColor(R.color.black))
             twThreeDay.setTextColor(resources.getColor(R.color.myBlue))
-            sharedViewModel.screen.postValue(Const.THREE_DAY_SECTION)
+            sharedViewModel.setScreen(Const.THREE_DAY_SECTION)
             // initSettings
             prefs.screen = Const.THREE_DAY_SECTION
 
@@ -98,7 +97,7 @@ class SettingsScreenFragment : Fragment() {
             twDay.setTextColor(resources.getColor(R.color.black))
             twThreeDay.setTextColor(resources.getColor(R.color.black))
             twWeek.setTextColor(resources.getColor(R.color.myBlue))
-            sharedViewModel.screen.postValue(Const.WEEK_SECTION)
+            sharedViewModel.setScreen(Const.WEEK_SECTION)
             // initSettings
             prefs.screen = Const.WEEK_SECTION
 

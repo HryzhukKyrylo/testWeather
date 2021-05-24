@@ -42,6 +42,7 @@ data class Sys(
 data class Wind(
 
     @SerializedName("speed") val speed: Double,
+    var speedText: String,
     @SerializedName("deg") val deg: Int
 )
 

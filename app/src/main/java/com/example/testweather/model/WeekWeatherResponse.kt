@@ -86,6 +86,7 @@ data class Current(
 data class Temp(
 
     @SerializedName("day") val day: Double,
+    val dayText: String,
     @SerializedName("min") val min: Double,
     @SerializedName("max") val max: Double,
     @SerializedName("night") val night: Double,
