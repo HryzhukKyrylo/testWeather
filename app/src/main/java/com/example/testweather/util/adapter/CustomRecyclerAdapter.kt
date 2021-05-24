@@ -19,7 +19,6 @@ abstract class WeatherItem
 class CustomRecyclerAdapter(
      val context : Context,
      private var itemList : List<WeatherItem>
-
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class DailyViewHolder(private val binding: ItemDayBinding) :

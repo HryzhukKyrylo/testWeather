@@ -35,7 +35,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
     ): View {
         prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
         sharedViewModel.screen.postValue(prefs.screen)
-//        sharedViewModel.units = prefs.units
+        sharedViewModel.units = prefs.units
 
         binding = FragmentWeatherScreenBinding.inflate(inflater, container, false)
         initListeners()
@@ -76,7 +76,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
                 })
             }
             Const.THREE_DAY_SECTION -> {
-                sharedViewModel.getThreeDaysWeather(sharedViewModel.units)
+                sharedViewModel.getThreeDaysWeather()
                 sharedViewModel.threeDaysWeather.observe(viewLifecycleOwner, {
                     initCardView(
                         it.timezone,
@@ -134,6 +134,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
         textTemp: String
     ) {
         binding.twCity.text = textCity
+//        binding.imageCard.setImageResource(IconHelper.getIcon(imageIcon))
         when (imageIcon) {
             "01d" -> binding.imageCard.setImageResource(R.drawable.ic_sun)
             "02d" -> binding.imageCard.setImageResource(R.drawable.ic_cloudysun)
@@ -146,7 +147,6 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
             "50d" -> binding.imageCard.setImageResource(R.drawable.ic_fog)
 
             else -> binding.imageCard.setImageResource(R.drawable.ic_cloudysun)
-
         }
         binding.twCardName.text = textClouds
         binding.twCardTemp.text = textTemp
@@ -157,5 +157,4 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen) {
             NavHostFragment.findNavController(this).navigate(R.id.navigateWeatherToSettingsScreen)
         }
     }
-
 }

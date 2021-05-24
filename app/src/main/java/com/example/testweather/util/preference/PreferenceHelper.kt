@@ -7,6 +7,7 @@ import android.preference.PreferenceManager
 object PreferenceHelper {
     const val WEATHER_UNITS = "UNITS"
     const val WEATHER_CELSIUS = "CELSIUS"
+    const val WEATHER_FAHRENHEIGHT = "FAHRENHEIGHT"
     const val WEATHER_DAY = "DAY"
     const val WEATHER_M_S = "M_S"
     const val WEATHER_M_H = "M_H"
@@ -30,7 +31,6 @@ object PreferenceHelper {
             }
         }
 
-
     var SharedPreferences.screen
         get() = getInt(WEATHER_DAY, 1)
         set(value) {
@@ -47,13 +47,12 @@ object PreferenceHelper {
             }
         }
 
-
     // initSettings
     var SharedPreferences.fahrenheitSet
-        get() = getBoolean(WEATHER_UNITS, false)
+        get() = getBoolean(WEATHER_FAHRENHEIGHT, false)
         set(value) {
             editMe {
-                it.putBoolean(WEATHER_UNITS, value)
+                it.putBoolean(WEATHER_FAHRENHEIGHT, value)
             }
         }
 
@@ -86,5 +85,4 @@ object PreferenceHelper {
                 it.putBoolean(WEATHER_CITY, value)
             }
         }
-
 }

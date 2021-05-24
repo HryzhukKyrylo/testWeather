@@ -28,7 +28,7 @@ class SharedViewModel @Inject constructor(
 
     var screen = MutableLiveData<Int>()
     var setSelectCity = ""
-    var units = ""
+    var units: String? = null
     var setM_s = false
     var setM_H = false
 
@@ -60,19 +60,18 @@ class SharedViewModel @Inject constructor(
                 Log.i("TAG_VIEW_MODEL", "getWeekWeather: ${response.errorBody().toString()}")
             }
         }
-
     }
-    fun getThreeDaysWeather(units: String) = viewModelScope.launch {
-        weatherRepository.getThreeDaysWeather(lat = latKyiv, lon = lonKyiv,units = units).let { response ->
-            if (response.isSuccessful) {
-                withContext(Dispatchers.Main) {
-                    threeDays.postValue(response.body())
+
+    fun getThreeDaysWeather() = viewModelScope.launch {
+        weatherRepository.getThreeDaysWeather(lat = latKyiv, lon = lonKyiv, units = units ?: "")
+            .let { response ->
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        threeDays.postValue(response.body())
+                    }
+                } else {
+                    Log.i("TAG_VIEW_MODEL", "getWeekWeather: ${response.errorBody().toString()}")
                 }
-            } else {
-                Log.i("TAG_VIEW_MODEL", "getWeekWeather: ${response.errorBody().toString()}")
             }
-        }
-
     }
-
 }
