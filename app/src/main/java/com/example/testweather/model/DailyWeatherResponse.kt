@@ -23,6 +23,7 @@ data class DailyWeatherResponse(
 data class Main(
 
     @SerializedName("temp") val temp: Double,
+    var temp_text : String,
     @SerializedName("feels_like") val feels_like: Double,
     @SerializedName("temp_min") val temp_min: Double,
     @SerializedName("temp_max") val temp_max: Double,

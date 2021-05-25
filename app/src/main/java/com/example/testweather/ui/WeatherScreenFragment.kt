@@ -25,6 +25,7 @@ import com.example.testweather.util.getSelectedData
 import com.example.testweather.util.preference.PreferenceHelper
 import com.example.testweather.util.preference.PreferenceHelper.screen
 import com.example.testweather.util.preference.PreferenceHelper.units
+import com.example.testweather.util.preference.PreferenceHelper.units_text
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,6 +40,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
         prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
         sharedViewModel.setScreen(prefs.screen)
         sharedViewModel.units = prefs.units
+        sharedViewModel.unitsText = prefs.units_text.toString()
     }
 
     override fun onCreateView(
@@ -59,6 +61,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
             startScreen(it)
         })
     }
+
 
     private fun startScreen(scr: Int) {
         when (scr) {

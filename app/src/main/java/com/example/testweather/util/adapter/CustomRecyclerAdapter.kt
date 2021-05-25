@@ -16,7 +16,6 @@ import com.example.testweather.model.ParametersDayRecyclerSection
 import com.example.testweather.util.IconHelper
 import com.example.testweather.util.getDate2String
 import com.example.testweather.util.getDateString
-import com.example.testweather.util.getHourData
 
 abstract class WeatherItem
 
@@ -30,11 +29,12 @@ class CustomRecyclerAdapter(
 
     class DailyViewHolder(private val binding: ItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(item: ParametersDayRecyclerSection) {
-            binding.twPressure.text = item.pressure
-            binding.twHumidity.text = item.humidity
+            binding.twPressure.text = item.pressure + "hPa"
+            binding.twHumidity.text = item.humidity + "%"
             binding.twWind.text = item.windSpeed
-            binding.twClouds.text = item.clouds
+            binding.twClouds.text = item.clouds + "%"
         }
     }
 
@@ -52,7 +52,7 @@ class CustomRecyclerAdapter(
                 listener.onEntryClicked(item.dt)
             }
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
-            binding.twTempInItem.text = item.temp.day.toString() + " 'C"
+            binding.twTempInItem.text = item.temp.dayText
 
         }
     }
@@ -66,7 +66,7 @@ class CustomRecyclerAdapter(
 //            binding.twTextInItem.text = getHourData(item.dt)
             binding.twTextInItem.text = getDate2String(item.dt)
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
-            binding.twTempInItem.text = item.main.temp.toString() + " 'C"
+            binding.twTempInItem.text = item.main.temp_text
 
         }
     }
@@ -124,8 +124,7 @@ class CustomRecyclerAdapter(
     override fun getItemCount(): Int = itemList.size
 
     override fun getItemViewType(position: Int): Int {
-        val item = itemList[position]
-        return when (item) {
+        return when (itemList[position]) {
             is ParametersDayRecyclerSection -> Const.DAILY_SECTION
             is DailySection -> Const.WEEK_SECTION
             is HourlySection -> Const.HOUR_SECTION

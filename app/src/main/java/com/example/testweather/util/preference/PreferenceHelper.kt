@@ -3,6 +3,7 @@ package com.example.testweather.util.preference
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.example.testweather.const.Const
 
 object PreferenceHelper {
     const val WEATHER_UNITS = "UNITS"
@@ -10,6 +11,7 @@ object PreferenceHelper {
     const val WEATHER_FAHRENHEIGHT = "FAHRENHEIGHT"
     const val WEATHER_DAY = "DAY"
     const val WEATHER_M_S = "M_S"
+    const val WEATHER_WIND_SPEED = "SPEED"
     const val WEATHER_M_H = "M_H"
     const val WEATHER_CITY = "CITY"
 
@@ -38,6 +40,13 @@ object PreferenceHelper {
                 it.putInt(WEATHER_DAY, value)
             }
         }
+    var SharedPreferences.units_text
+        get() = getString(WEATHER_WIND_SPEED, Const.CELSIUS_PREF)
+        set(value) {
+            editMe {
+                it.putString(WEATHER_WIND_SPEED, value)
+            }
+        }
 
     var SharedPreferences.city
         get() = getString(WEATHER_CITY, "")
@@ -57,7 +66,7 @@ object PreferenceHelper {
         }
 
     var SharedPreferences.celsiusSet
-        get() = getBoolean(WEATHER_CELSIUS, false)
+        get() = getBoolean(WEATHER_CELSIUS, true)
         set(value) {
             editMe {
                 it.putBoolean(WEATHER_CELSIUS, value)
@@ -65,7 +74,7 @@ object PreferenceHelper {
         }
 
     var SharedPreferences.m_sSet
-        get() = getBoolean(WEATHER_M_S, false)
+        get() = getBoolean(WEATHER_M_S, true)
         set(value) {
             editMe {
                 it.putBoolean(WEATHER_M_S, value)

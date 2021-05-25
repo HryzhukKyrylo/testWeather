@@ -21,6 +21,7 @@ import com.example.testweather.util.preference.PreferenceHelper.m_hSet
 import com.example.testweather.util.preference.PreferenceHelper.m_sSet
 import com.example.testweather.util.preference.PreferenceHelper.screen
 import com.example.testweather.util.preference.PreferenceHelper.units
+import com.example.testweather.util.preference.PreferenceHelper.units_text
 import kotlinx.android.synthetic.main.fragment_settings_screen.*
 
 
@@ -61,6 +62,7 @@ class SettingsScreenFragment : Fragment() {
             // initSettings
             prefs.fahrenheitSet = true
             prefs.celsiusSet = false
+            prefs.units_text = Const.FAHRENHEIT_PREF
         }
         iwCelsius.setOnClickListener {
             iwFahrenheit.setImageResource(R.drawable.ic_fahrenheit__1_)
@@ -69,6 +71,7 @@ class SettingsScreenFragment : Fragment() {
             sharedViewModel.units = Const.CELSIUS_UNITS
             prefs.celsiusSet = true
             prefs.fahrenheitSet = false
+            prefs.units_text = Const.CELSIUS_PREF
         }
         twSelectCity.setOnClickListener {
             twSelectCity.setTextColor(resources.getColor(R.color.myBlue))
@@ -106,8 +109,8 @@ class SettingsScreenFragment : Fragment() {
             twM_H.setTextColor(resources.getColor(R.color.black))
             twM_s.setTextColor(resources.getColor(R.color.myBlue))
 
-            sharedViewModel.setMs = true
-            sharedViewModel.setMh = false
+//            sharedViewModel.setMs = true
+//            sharedViewModel.setMh = false
             // initSettings
             prefs.m_sSet = true
             prefs.m_hSet = false
@@ -117,8 +120,8 @@ class SettingsScreenFragment : Fragment() {
             twM_s.setTextColor(resources.getColor(R.color.black))
             twM_H.setTextColor(resources.getColor(R.color.myBlue))
 
-            sharedViewModel.setMs = false
-            sharedViewModel.setMh = true
+//            sharedViewModel.setMs = false
+//            sharedViewModel.setMh = true
             // initSettings
             prefs.m_sSet = false
             prefs.m_hSet = true

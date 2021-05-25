@@ -10,5 +10,9 @@ object Const {
     const val FAHRENHEIT_UNITS = "imperial"
     const val CELSIUS_UNITS = "metric"
     const val CUSTOM_PREF_NAME = "User_data"
+    const val FAHRENHEIT_PREF ="°F"
+    const val CELSIUS_PREF ="°C"
+
+
 
 }
