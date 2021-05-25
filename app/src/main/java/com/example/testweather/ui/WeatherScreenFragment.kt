@@ -95,6 +95,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
                                 false
                             )
                         adapter = recyclerAdapter
+                        setHasFixedSize(true)
                     }
                 })
             }
@@ -107,7 +108,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
                         it.current.weather[0].main,
                         it.current.temp.toString()
                     )
-                    recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.daily.take(7))
+                    recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.daily.take(5))
                     recyclerAdapter.setListener(this@WeatherScreenFragment)
                     binding.recyclerView.apply {
                         layoutManager =
@@ -117,6 +118,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
                                 false
                             )
                         adapter = recyclerAdapter
+                        setHasFixedSize(true)
                     }
                 })
             }
@@ -150,15 +152,11 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
     }
 
     override fun onEntryClicked(data: String) {
-        sharedViewModel.getWeekWeather()
-        sharedViewModel.weekWeather.observe(viewLifecycleOwner, {
-            initCardView(
-                it.timezone,
-                it.current.weather[0].icon,
-                it.current.weather[0].main,
-                it.current.temp.toString()
-            )
-            recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.hourly)
+        sharedViewModel.getHourlyWeather()
+        sharedViewModel.hourlyList.observe(viewLifecycleOwner, {
+
+            recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.list.filter { getSelectedData(it.dt) == data })
+//            recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.list)
             binding.recyclerView.apply {
                 layoutManager =
                     LinearLayoutManager(
@@ -167,6 +165,8 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
                         false
                     )
                 adapter = recyclerAdapter
+                setHasFixedSize(true)
+
             }
         })
     }

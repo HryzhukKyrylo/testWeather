@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.testweather.model.DailyWeatherResponse
+import com.example.testweather.model.HourlyWeatherResponse
 import com.example.testweather.model.ThreeDaysWeatherResponse
 import com.example.testweather.model.WeekWeatherResponse
 import com.example.testweather.repository.WeatherRepository
@@ -19,9 +20,11 @@ class SharedViewModel @Inject constructor(
     private val daily = MutableLiveData<DailyWeatherResponse>()
     private val week = MutableLiveData<WeekWeatherResponse>()
     private val threeDays = MutableLiveData<ThreeDaysWeatherResponse>()
+    private val hourly = MutableLiveData<HourlyWeatherResponse>()
     val dailyWeather = daily
     val threeDaysWeather = threeDays
     val weekWeather = week
+    val hourlyList = hourly
 
     private var screen = MutableLiveData<Int>()
     val startScreen = screen
@@ -72,5 +75,15 @@ class SharedViewModel @Inject constructor(
                 }
             }
     }
-    fun getHourlyWeather(){}
+
+     fun getHourlyWeather()= viewModelScope.launch  {
+        weatherRepository.getHourlyWeather(city_name = city, units = units ?: "")
+            .let { response ->
+                if (response.isSuccessful) {
+                    hourly.value = response.body()
+                } else {
+                    Log.i("TAG_VIEW_MODEL", "getHourlyWeather: ${response.errorBody().toString()}")
+                }
+            }
+    }
 }

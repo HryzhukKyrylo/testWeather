@@ -11,12 +11,10 @@ import com.example.testweather.databinding.ItemDayBinding
 import com.example.testweather.databinding.ItemNameOfDayBinding
 import com.example.testweather.model.Daily
 import com.example.testweather.model.DailyWeatherResponse
-import com.example.testweather.model.HeadSection
 import com.example.testweather.model.Hourly
-import com.example.testweather.util.IconHelper
+import com.example.testweather.model.ListHourly
+import com.example.testweather.util.*
 import com.example.testweather.util.getDateHourlyString
-import com.example.testweather.util.getDateString
-import com.example.testweather.util.getSelectedData
 
 abstract class WeatherItem
 
@@ -57,15 +55,26 @@ class CustomRecyclerAdapter(
         }
     }
 
-    class HourlyViewHolder(
+//    class HourlyViewHolder(
+//        private val binding: ItemColumnDayBinding
+//    ) :
+//        RecyclerView.ViewHolder(binding.root) {
+//        @SuppressLint("SetTextI18n", "SimpleDateFormat")
+//        fun bind(item: Hourly) {
+//            binding.twTextInItem.text = getDateHourlyString(item.dt)
+//            binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
+//            binding.twTempInItem.text = item.temp.toString() + " 'C"
+//        }
+//    }
+    class HourViewHolder(
         private val binding: ItemColumnDayBinding
     ) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
-        fun bind(item: Hourly) {
-            binding.twTextInItem.text = getDateHourlyString(item.dt)
+        fun bind(item: ListHourly) {
+            binding.twTextInItem.text = getHourData(item.dt)
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
-            binding.twTempInItem.text = item.temp.toString() + " 'C"
+            binding.twTempInItem.text = item.main.temp.toString() + " 'C"
         }
     }
     class DayViewHolder(
@@ -73,8 +82,8 @@ class CustomRecyclerAdapter(
     ) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
-        fun bind(item: HeadSection) {
-            binding.twDataOfDay.text = item.str
+        fun bind() {
+
         }
     }
 
@@ -93,11 +102,16 @@ class CustomRecyclerAdapter(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-            Const.HOURLY_SECTION -> HourlyViewHolder(
+            Const.HOUR_SECTION -> HourViewHolder(
                 ItemColumnDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
+//            Const.HOURLY_SECTION -> HourlyViewHolder(
+//                ItemColumnDayBinding.inflate(
+//                    LayoutInflater.from(parent.context), parent, false
+//                )
+//            )
             Const.HEADER_SECTION -> DayViewHolder(
                 ItemNameOfDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
@@ -115,7 +129,9 @@ class CustomRecyclerAdapter(
         when (holder) {
             is DailyViewHolder -> holder.bind(item as DailyWeatherResponse)
             is WeekViewHolder -> holder.bind(item as Daily)
-            is HourlyViewHolder -> holder.bind(item as Hourly)
+//            is HourlyViewHolder -> holder.bind(item as Hourly)
+            is HourViewHolder -> holder.bind(item as ListHourly)
+
         }
     }
 
@@ -126,7 +142,8 @@ class CustomRecyclerAdapter(
         return when {
             item is DailyWeatherResponse -> Const.DAILY_SECTION
             item is Daily -> Const.WEEK_SECTION
-            item is Hourly -> Const.HOURLY_SECTION
+//            item is Hourly -> Const.HOURLY_SECTION
+            item is ListHourly -> Const.HOUR_SECTION
             else -> throw IllegalArgumentException("Invalid type of data $position")
         }
     }

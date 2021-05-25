@@ -5,6 +5,8 @@ object Const {
     const val THREE_DAY_SECTION = 3
     const val WEEK_SECTION = 7
     const val HOURLY_SECTION = 9
+    const val HOUR_SECTION = 6
+
     const val HEADER_SECTION = 8
     const val FAHRENHEIT_UNITS = "imperial"
     const val CELSIUS_UNITS = "metric"
