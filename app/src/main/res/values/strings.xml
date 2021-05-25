@@ -12,4 +12,8 @@
     <string name="setting">НАСТРОЙКИ</string>
     <string name="city">City</string>
     <string name="start_descroption">start_image_description</string>
+    <string name="description_cloudness">Description cloudness</string>
+    <string name="description_pressure">Pressure</string>
+    <string name="description_wind">Description wind</string>
+    <string name="description_cloudiness">Description cloudiness</string>
 </resources>
