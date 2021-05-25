@@ -106,8 +106,8 @@ class SettingsScreenFragment : Fragment() {
             twM_H.setTextColor(resources.getColor(R.color.black))
             twM_s.setTextColor(resources.getColor(R.color.myBlue))
 
-            sharedViewModel.setM_s = true
-            sharedViewModel.setM_H = false
+            sharedViewModel.setMs = true
+            sharedViewModel.setMh = false
             // initSettings
             prefs.m_sSet = true
             prefs.m_hSet = false
@@ -117,8 +117,8 @@ class SettingsScreenFragment : Fragment() {
             twM_s.setTextColor(resources.getColor(R.color.black))
             twM_H.setTextColor(resources.getColor(R.color.myBlue))
 
-            sharedViewModel.setM_s = false
-            sharedViewModel.setM_H = true
+            sharedViewModel.setMs = false
+            sharedViewModel.setMh = true
             // initSettings
             prefs.m_sSet = false
             prefs.m_hSet = true
