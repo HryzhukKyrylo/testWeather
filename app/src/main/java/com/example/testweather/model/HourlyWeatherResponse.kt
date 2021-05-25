@@ -4,11 +4,11 @@ import com.example.testweather.util.adapter.WeatherItem
 import com.google.gson.annotations.SerializedName
 
 data class HourlyWeatherResponse (
-@SerializedName("cod") val cod : Int,
-@SerializedName("message") val message : Int,
-@SerializedName("cnt") val cnt : Int,
-@SerializedName("list") val list : List<ListHourly>,
-@SerializedName("city") val city : City
+    @SerializedName("cod") val cod : Int,
+    @SerializedName("message") val message : Int,
+    @SerializedName("cnt") val cnt : Int,
+    @SerializedName("list") val list : List<HourlySection>,
+    @SerializedName("city") val city : City
 )
 
 
@@ -23,7 +23,7 @@ data class City (
     @SerializedName("sunset") val sunset : Int
 )
 
-data class ListHourly (
+data class HourlySection (
 
     @SerializedName("dt") val dt : Int,
     @SerializedName("main") val main : Main,

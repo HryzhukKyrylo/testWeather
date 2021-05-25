@@ -12,7 +12,7 @@ data class WeekWeatherResponse(
     @SerializedName("current") val current: Current,
     @SerializedName("minutely") val minutely: List<Minutely>,
     @SerializedName("hourly") val hourly: List<Hourly>,
-    @SerializedName("daily") val daily: List<Daily>
+    @SerializedName("daily") val dailySection: List<DailySection>
 ): WeatherItem()
 
 data class Hourly(
@@ -41,7 +41,7 @@ data class Feels_like(
     @SerializedName("morn") val morn: Double
 )
 
-data class Daily(
+data class DailySection(
 
     @SerializedName("dt") val dt: Int,
     @SerializedName("sunrise") val sunrise: Int,

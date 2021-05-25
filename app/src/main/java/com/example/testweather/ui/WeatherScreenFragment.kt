@@ -14,10 +14,13 @@ import com.example.testweather.R
 import com.example.testweather.const.Const
 import com.example.testweather.const.Const.CUSTOM_PREF_NAME
 import com.example.testweather.databinding.FragmentWeatherScreenBinding
+import com.example.testweather.model.HeadRecyclerSection
+import com.example.testweather.model.ParametersDayRecyclerSection
 import com.example.testweather.ui.viewmodel.SharedViewModel
 import com.example.testweather.util.IconHelper
 import com.example.testweather.util.adapter.CustomRecyclerAdapter
 import com.example.testweather.util.adapter.WeatherItem
+import com.example.testweather.util.getDateDayString
 import com.example.testweather.util.getSelectedData
 import com.example.testweather.util.preference.PreferenceHelper
 import com.example.testweather.util.preference.PreferenceHelper.screen
@@ -25,19 +28,26 @@ import com.example.testweather.util.preference.PreferenceHelper.units
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), CustomRecyclerAdapter.OnItemClickedListener {
+class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
+    CustomRecyclerAdapter.OnItemClickedListener {
     private lateinit var binding: FragmentWeatherScreenBinding
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var recyclerAdapter: CustomRecyclerAdapter
     private lateinit var prefs: SharedPreferences
+    override fun onStart() {
+        super.onStart()
+        prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
+        sharedViewModel.setScreen(prefs.screen)
+        sharedViewModel.units = prefs.units
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
-        sharedViewModel.setScreen(prefs.screen)
-        sharedViewModel.units = prefs.units
+//        prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
+//        sharedViewModel.setScreen(prefs.screen)
+//        sharedViewModel.units = prefs.units
 
         binding = FragmentWeatherScreenBinding.inflate(inflater, container, false)
         initListeners()
@@ -54,14 +64,10 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
         when (scr) {
             Const.DAILY_SECTION -> {
                 sharedViewModel.getDailyWeather()
-                sharedViewModel.dailyWeather.observe(viewLifecycleOwner, {
-
-                    initCardView(
-                        it.name,
-                        it.weather[0].icon,
-                        it.weather[0].main,
-                        it.main.temp.toString()
-                    )
+                sharedViewModel.dayCardSection.observe(viewLifecycleOwner, {
+                    initCardView(it.textCity, it.imageIcon, it.textClouds, it.textTemp)
+                })
+                sharedViewModel.parametersDaySection.observe(viewLifecycleOwner, {
                     recyclerAdapter =
                         CustomRecyclerAdapter(requireContext(), listOf<WeatherItem>(it))
                     startRecycler()
@@ -69,31 +75,24 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
             }
             Const.THREE_DAY_SECTION -> {
                 sharedViewModel.getWeekWeather()
-                sharedViewModel.weekWeather.observe(viewLifecycleOwner, {
-                    initCardView(
-                        it.timezone,
-                        it.current.weather[0].icon,
-                        it.current.weather[0].main,
-                        it.current.temp.toString()
-                    )
-                    recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.daily.take(3))
+                sharedViewModel.dayCardSection.observe(viewLifecycleOwner, {
+                    initCardView(it.textCity, it.imageIcon, it.textClouds, it.textTemp)
+                })
+                sharedViewModel.dailySection.observe(viewLifecycleOwner, {
+                    recyclerAdapter = CustomRecyclerAdapter(requireContext(), it)
                     recyclerAdapter.setListener(this@WeatherScreenFragment)
-
                     startRecycler()
                 })
             }
             Const.WEEK_SECTION -> {
                 sharedViewModel.getWeekWeather()
-                sharedViewModel.weekWeather.observe(viewLifecycleOwner, {
-                    initCardView(
-                        it.timezone,
-                        it.current.weather[0].icon,
-                        it.current.weather[0].main,
-                        it.current.temp.toString()
-                    )
-                    recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.daily.take(5))
+                sharedViewModel.dayCardSection.observe(viewLifecycleOwner, {
+                    initCardView(it.textCity, it.imageIcon, it.textClouds, it.textTemp)
+                })
+                sharedViewModel.dailySection.observe(viewLifecycleOwner, {
+                    recyclerAdapter = CustomRecyclerAdapter(requireContext(), it)
                     recyclerAdapter.setListener(this@WeatherScreenFragment)
-                   startRecycler()
+                    startRecycler()
                 })
             }
             else -> {
@@ -105,7 +104,9 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
             }
         }
     }
-    private fun startRecycler(){
+
+
+    private fun startRecycler() {
         binding.recyclerView.apply {
             layoutManager =
                 LinearLayoutManager(
@@ -119,10 +120,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
     }
 
     private fun initCardView(
-        textCity: String,
-        imageIcon: String,
-        textClouds: String,
-        textTemp: String
+        textCity: String, imageIcon: String, textClouds: String, textTemp: String
     ) {
         binding.twCity.text = textCity
         binding.imageCard.setImageResource(IconHelper.getIconResource(imageIcon))
@@ -136,23 +134,28 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen), Custom
         }
     }
 
-    override fun onEntryClicked(data: String) {
+    override fun onEntryClicked(data: Int) {
+        val listRecycler = mutableListOf<WeatherItem>()
         sharedViewModel.getHourlyWeather()
-        sharedViewModel.hourlyList.observe(viewLifecycleOwner, {
-
-            recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.list.filter { getSelectedData(it.dt) == data })
-//            recyclerAdapter = CustomRecyclerAdapter(requireContext(), it.list)
-            binding.recyclerView.apply {
-                layoutManager =
-                    LinearLayoutManager(
-                        requireContext(),
-                        LinearLayoutManager.VERTICAL,
-                        false
-                    )
-                adapter = recyclerAdapter
-                setHasFixedSize(true)
-
+        sharedViewModel.hourlySection.observe(viewLifecycleOwner, { list ->
+            val selectData = getSelectedData(data)
+            val arr = list.filter { element ->
+                getSelectedData(element.dt) == selectData
             }
+            val items = ParametersDayRecyclerSection(
+                pressure = arr[0].main.pressure.toString(),
+                humidity = arr[0].main.humidity.toString(),
+                windSpeed = arr[0].wind.speed.toString(),
+                clouds = arr[0].clouds.all.toString()
+            )
+
+            listRecycler.add(HeadRecyclerSection(selectedDay = getDateDayString(data)))
+            listRecycler.addAll(arr)
+            listRecycler.add(items)
+
         })
+        recyclerAdapter = CustomRecyclerAdapter(requireContext(), listRecycler)
+        startRecycler()
+
     }
 }

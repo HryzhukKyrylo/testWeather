@@ -3,8 +3,7 @@ package com.example.testweather.const
 object Const {
     const val DAILY_SECTION = 1
     const val THREE_DAY_SECTION = 3
-    const val WEEK_SECTION = 7
-    const val HOURLY_SECTION = 9
+    const val WEEK_SECTION = 5
     const val HOUR_SECTION = 6
 
     const val HEADER_SECTION = 8

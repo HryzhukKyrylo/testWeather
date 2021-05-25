@@ -133,9 +133,9 @@ class SettingsScreenFragment : Fragment() {
         if (prefs.m_hSet) twM_H.setTextColor(resources.getColor(R.color.myBlue))
         if (prefs.citySet) twSelectCity.setTextColor(resources.getColor(R.color.myBlue))
         when (prefs.screen) {
-            1 -> twDay.setTextColor(resources.getColor(R.color.myBlue))
-            3 -> twThreeDay.setTextColor(resources.getColor(R.color.myBlue))
-            7 -> twWeek.setTextColor(resources.getColor(R.color.myBlue))
+            Const.DAILY_SECTION -> twDay.setTextColor(resources.getColor(R.color.myBlue))
+            Const.THREE_DAY_SECTION -> twThreeDay.setTextColor(resources.getColor(R.color.myBlue))
+            Const.WEEK_SECTION -> twWeek.setTextColor(resources.getColor(R.color.myBlue))
         }
 
     }

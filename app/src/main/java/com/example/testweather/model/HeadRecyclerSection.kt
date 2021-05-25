@@ -1,4 +1,7 @@
 package com.example.testweather.model
 
-class HeadRecyclerSection {
-}
+import com.example.testweather.util.adapter.WeatherItem
+
+data class HeadRecyclerSection (
+    val selectedDay: String
+        ) : WeatherItem()

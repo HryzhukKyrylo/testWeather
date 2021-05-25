@@ -9,12 +9,14 @@ import com.example.testweather.const.Const
 import com.example.testweather.databinding.ItemColumnDayBinding
 import com.example.testweather.databinding.ItemDayBinding
 import com.example.testweather.databinding.ItemNameOfDayBinding
-import com.example.testweather.model.Daily
-import com.example.testweather.model.DailyWeatherResponse
-import com.example.testweather.model.Hourly
-import com.example.testweather.model.ListHourly
-import com.example.testweather.util.*
-import com.example.testweather.util.getDateHourlyString
+import com.example.testweather.model.DailySection
+import com.example.testweather.model.HeadRecyclerSection
+import com.example.testweather.model.HourlySection
+import com.example.testweather.model.ParametersDayRecyclerSection
+import com.example.testweather.util.IconHelper
+import com.example.testweather.util.getDate2String
+import com.example.testweather.util.getDateString
+import com.example.testweather.util.getHourData
 
 abstract class WeatherItem
 
@@ -28,26 +30,26 @@ class CustomRecyclerAdapter(
 
     class DailyViewHolder(private val binding: ItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: DailyWeatherResponse) {
-            binding.twPressure.text = item.main.pressure.toString()
-            binding.twHumidity.text = item.main.humidity.toString()
-            binding.twWind.text = item.wind.speed.toString()
-            binding.twClouds.text = item.clouds.all.toString()
+        fun bind(item: ParametersDayRecyclerSection) {
+            binding.twPressure.text = item.pressure
+            binding.twHumidity.text = item.humidity
+            binding.twWind.text = item.windSpeed
+            binding.twClouds.text = item.clouds
         }
     }
 
     class WeekViewHolder(
-        val listener: OnItemClickedListener,
+        private val listener: OnItemClickedListener,
         val context: Context,
         private val binding: ItemColumnDayBinding
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
-        fun bind(item: Daily) {
+        fun bind(item: DailySection) {
             binding.twTextInItem.text = getDateString(item.dt)
             binding.twTextInItem.setOnClickListener {
-                listener?.onEntryClicked(getSelectedData(item.dt))
+                listener.onEntryClicked(item.dt)
             }
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.temp.day.toString() + " 'C"
@@ -55,38 +57,29 @@ class CustomRecyclerAdapter(
         }
     }
 
-//    class HourlyViewHolder(
-//        private val binding: ItemColumnDayBinding
-//    ) :
-//        RecyclerView.ViewHolder(binding.root) {
-//        @SuppressLint("SetTextI18n", "SimpleDateFormat")
-//        fun bind(item: Hourly) {
-//            binding.twTextInItem.text = getDateHourlyString(item.dt)
-//            binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
-//            binding.twTempInItem.text = item.temp.toString() + " 'C"
-//        }
-//    }
     class HourViewHolder(
         private val binding: ItemColumnDayBinding
     ) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
-        fun bind(item: ListHourly) {
-            binding.twTextInItem.text = getHourData(item.dt)
+        fun bind(item: HourlySection) {
+//            binding.twTextInItem.text = getHourData(item.dt)
+            binding.twTextInItem.text = getDate2String(item.dt)
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.main.temp.toString() + " 'C"
+
         }
     }
-    class DayViewHolder(
+
+    class HeadViewHolder(
         private val binding: ItemNameOfDayBinding
     ) :
         RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n", "SimpleDateFormat")
-        fun bind() {
+        fun bind(item: HeadRecyclerSection) {
+            binding.twDataOfDay.text = item.selectedDay
 
         }
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -107,17 +100,11 @@ class CustomRecyclerAdapter(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-//            Const.HOURLY_SECTION -> HourlyViewHolder(
-//                ItemColumnDayBinding.inflate(
-//                    LayoutInflater.from(parent.context), parent, false
-//                )
-//            )
-            Const.HEADER_SECTION -> DayViewHolder(
+            Const.HEADER_SECTION -> HeadViewHolder(
                 ItemNameOfDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-
             else -> {
                 throw IllegalArgumentException("Invalid type of data")
             }
@@ -127,11 +114,10 @@ class CustomRecyclerAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when (holder) {
-            is DailyViewHolder -> holder.bind(item as DailyWeatherResponse)
-            is WeekViewHolder -> holder.bind(item as Daily)
-//            is HourlyViewHolder -> holder.bind(item as Hourly)
-            is HourViewHolder -> holder.bind(item as ListHourly)
-
+            is DailyViewHolder -> holder.bind(item as ParametersDayRecyclerSection)
+            is WeekViewHolder -> holder.bind(item as DailySection)
+            is HourViewHolder -> holder.bind(item as HourlySection)
+            is HeadViewHolder -> holder.bind(item as HeadRecyclerSection)
         }
     }
 
@@ -139,11 +125,11 @@ class CustomRecyclerAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val item = itemList[position]
-        return when {
-            item is DailyWeatherResponse -> Const.DAILY_SECTION
-            item is Daily -> Const.WEEK_SECTION
-//            item is Hourly -> Const.HOURLY_SECTION
-            item is ListHourly -> Const.HOUR_SECTION
+        return when (item) {
+            is ParametersDayRecyclerSection -> Const.DAILY_SECTION
+            is DailySection -> Const.WEEK_SECTION
+            is HourlySection -> Const.HOUR_SECTION
+            is HeadRecyclerSection -> Const.HEADER_SECTION
             else -> throw IllegalArgumentException("Invalid type of data $position")
         }
     }
@@ -154,6 +140,6 @@ class CustomRecyclerAdapter(
 
 
     interface OnItemClickedListener {
-        fun onEntryClicked(data: String)
+        fun onEntryClicked(data: Int)
     }
 }
