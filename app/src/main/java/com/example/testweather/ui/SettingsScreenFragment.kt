@@ -22,6 +22,7 @@ import com.example.testweather.util.preference.PreferenceHelper.m_sSet
 import com.example.testweather.util.preference.PreferenceHelper.screen
 import com.example.testweather.util.preference.PreferenceHelper.units
 import com.example.testweather.util.preference.PreferenceHelper.units_text
+import com.example.testweather.util.preference.PreferenceHelper.windSpeed
 import kotlinx.android.synthetic.main.fragment_settings_screen.*
 
 
@@ -109,8 +110,7 @@ class SettingsScreenFragment : Fragment() {
             twM_H.setTextColor(resources.getColor(R.color.black))
             twM_s.setTextColor(resources.getColor(R.color.myBlue))
 
-//            sharedViewModel.setMs = true
-//            sharedViewModel.setMh = false
+            prefs.windSpeed = R.string.m_s
             // initSettings
             prefs.m_sSet = true
             prefs.m_hSet = false
@@ -120,8 +120,7 @@ class SettingsScreenFragment : Fragment() {
             twM_s.setTextColor(resources.getColor(R.color.black))
             twM_H.setTextColor(resources.getColor(R.color.myBlue))
 
-//            sharedViewModel.setMs = false
-//            sharedViewModel.setMh = true
+            prefs.windSpeed = R.string.mil_h
             // initSettings
             prefs.m_sSet = false
             prefs.m_hSet = true

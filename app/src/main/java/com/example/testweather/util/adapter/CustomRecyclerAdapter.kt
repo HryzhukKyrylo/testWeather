@@ -14,8 +14,8 @@ import com.example.testweather.model.HeadRecyclerSection
 import com.example.testweather.model.HourlySection
 import com.example.testweather.model.ParametersDayRecyclerSection
 import com.example.testweather.util.IconHelper
-import com.example.testweather.util.getDate2String
 import com.example.testweather.util.getDateString
+import com.example.testweather.util.getHourData
 
 abstract class WeatherItem
 
@@ -47,10 +47,13 @@ class CustomRecyclerAdapter(
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(item: DailySection) {
-            binding.twTextInItem.text = getDateString(item.dt)
-            binding.twTextInItem.setOnClickListener {
+            binding.root.setOnClickListener {
                 listener.onEntryClicked(item.dt)
             }
+            binding.twTextInItem.text = getDateString(item.dt)
+//            binding.twTextInItem.setOnClickListener {
+//                listener.onEntryClicked(item.dt)
+//            }
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.temp.dayText
 
@@ -63,8 +66,8 @@ class CustomRecyclerAdapter(
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(item: HourlySection) {
-//            binding.twTextInItem.text = getHourData(item.dt)
-            binding.twTextInItem.text = getDate2String(item.dt)
+            binding.twTextInItem.text = getHourData(item.dt)
+//            binding.twTextInItem.text = getDate2String(item.dt)
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.main.temp_text
 

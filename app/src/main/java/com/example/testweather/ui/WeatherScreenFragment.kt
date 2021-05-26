@@ -1,11 +1,16 @@
 package com.example.testweather.ui
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.core.app.SharedElementCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -26,6 +31,7 @@ import com.example.testweather.util.preference.PreferenceHelper
 import com.example.testweather.util.preference.PreferenceHelper.screen
 import com.example.testweather.util.preference.PreferenceHelper.units
 import com.example.testweather.util.preference.PreferenceHelper.units_text
+import com.example.testweather.util.preference.PreferenceHelper.windSpeed
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,25 +47,42 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
         sharedViewModel.setScreen(prefs.screen)
         sharedViewModel.units = prefs.units
         sharedViewModel.unitsText = prefs.units_text.toString()
+        sharedViewModel.windSpeedText = getString(prefs.windSpeed)
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
-//        sharedViewModel.setScreen(prefs.screen)
-//        sharedViewModel.units = prefs.units
-
         binding = FragmentWeatherScreenBinding.inflate(inflater, container, false)
         initListeners()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sharedViewModel.startScreen.observe(viewLifecycleOwner, {
-            startScreen(it)
-        })
+        if (checkConnectivity(requireContext())) {
+            sharedViewModel.startScreen.observe(viewLifecycleOwner, {
+                startScreen(it)
+            })
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.not_connection), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun checkConnectivity(context: Context): Boolean {
+
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+
+        if (activeNetwork?.isConnected != null) {
+            return activeNetwork.isConnected
+        } else {
+            return false
+        }
     }
 
 
@@ -138,27 +161,32 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
     }
 
     override fun onEntryClicked(data: Int) {
-        val listRecycler = mutableListOf<WeatherItem>()
-        sharedViewModel.getHourlyWeather()
+        sharedViewModel.getHourlyWeather(getSelectedData(data))
         sharedViewModel.hourlySection.observe(viewLifecycleOwner, { list ->
-            val selectData = getSelectedData(data)
-            val arr = list.filter { element ->
-                getSelectedData(element.dt) == selectData
-            }
+            val listRecycler = mutableListOf<WeatherItem>()
             val items = ParametersDayRecyclerSection(
-                pressure = arr[0].main.pressure.toString(),
-                humidity = arr[0].main.humidity.toString(),
-                windSpeed = arr[0].wind.speed.toString(),
-                clouds = arr[0].clouds.all.toString()
+                pressure = list.first().main.pressure.toString(),
+                humidity = list.first().main.humidity.toString(),
+                windSpeed = list.first().wind.speed.toString() + sharedViewModel.windSpeedText,
+                clouds = list.first().clouds.all.toString()
             )
-
             listRecycler.add(HeadRecyclerSection(selectedDay = getDateDayString(data)))
-            listRecycler.addAll(arr)
+            listRecycler.addAll(list)
             listRecycler.add(items)
 
+            recyclerAdapter = CustomRecyclerAdapter(requireContext(), listRecycler)
+            startRecycler()
+
         })
-        recyclerAdapter = CustomRecyclerAdapter(requireContext(), listRecycler)
-        startRecycler()
 
     }
+
+//    fun onBackPressed() {
+//        if (back_pressed + 2000 > System.currentTimeMillis()) {
+//            super.onBackPressed()
+//        } else {
+//            Toast.makeText(requireContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show()
+//        }
+//        back_pressed = System.currentTimeMillis()
+//    }
 }

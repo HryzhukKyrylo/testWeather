@@ -16,4 +16,5 @@
     <string name="description_pressure">Pressure</string>
     <string name="description_wind">Description wind</string>
     <string name="description_cloudiness">Description cloudiness</string>
+    <string name="not_connection">No internet connection</string>
 </resources>

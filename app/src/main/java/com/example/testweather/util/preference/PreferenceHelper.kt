@@ -2,7 +2,7 @@ package com.example.testweather.util.preference
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import com.example.testweather.R
 import com.example.testweather.const.Const
 
 object PreferenceHelper {
@@ -11,11 +11,10 @@ object PreferenceHelper {
     const val WEATHER_FAHRENHEIGHT = "FAHRENHEIGHT"
     const val WEATHER_DAY = "DAY"
     const val WEATHER_M_S = "M_S"
-    const val WEATHER_WIND_SPEED = "SPEED"
+    const val WEATHER_UNITS_TEXT = "UNITS_TEXT"
+    const val WEATHER_WIND_SPEED = "SPEED_TEXT"
     const val WEATHER_M_H = "M_H"
     const val WEATHER_CITY = "CITY"
-
-    fun defaultPreference(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun customPreference(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
 
@@ -41,10 +40,10 @@ object PreferenceHelper {
             }
         }
     var SharedPreferences.units_text
-        get() = getString(WEATHER_WIND_SPEED, Const.CELSIUS_PREF)
+        get() = getString(WEATHER_UNITS_TEXT, Const.CELSIUS_PREF)
         set(value) {
             editMe {
-                it.putString(WEATHER_WIND_SPEED, value)
+                it.putString(WEATHER_UNITS_TEXT, value)
             }
         }
 
@@ -53,6 +52,14 @@ object PreferenceHelper {
         set(value) {
             editMe {
                 it.putString(WEATHER_CITY, value)
+            }
+        }
+
+    var SharedPreferences.windSpeed
+        get() = getInt(WEATHER_WIND_SPEED, R.string.mil_h)
+        set(value) {
+            editMe {
+                it.putInt(WEATHER_WIND_SPEED, value)
             }
         }
 
