@@ -17,4 +17,5 @@
     <string name="description_wind">Description wind</string>
     <string name="description_cloudiness">Description cloudiness</string>
     <string name="not_connection">No internet connection</string>
+    <string name="back_press">Нажмите еще раз для выхода!</string>
 </resources>

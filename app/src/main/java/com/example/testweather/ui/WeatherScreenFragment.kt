@@ -9,8 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.core.app.SharedElementCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -44,12 +42,13 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
     override fun onStart() {
         super.onStart()
         prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
-        sharedViewModel.setScreen(prefs.screen)
-        sharedViewModel.units = prefs.units
-        sharedViewModel.unitsText = prefs.units_text.toString()
-        sharedViewModel.windSpeedText = getString(prefs.windSpeed)
+        with(sharedViewModel) {
+            setScreen(prefs.screen)
+            initUnits(prefs.units.toString())
+            initUnitsText(prefs.units_text.toString())
+            initWindSpeed(getString(prefs.windSpeed))
+        }
     }
-
 
 
     override fun onCreateView(
@@ -66,8 +65,9 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
             sharedViewModel.startScreen.observe(viewLifecycleOwner, {
                 startScreen(it)
             })
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.not_connection), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.not_connection), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -167,7 +167,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
             val items = ParametersDayRecyclerSection(
                 pressure = list.first().main.pressure.toString(),
                 humidity = list.first().main.humidity.toString(),
-                windSpeed = list.first().wind.speed.toString() + sharedViewModel.windSpeedText,
+                windSpeed = list.first().wind.speed.toString() + sharedViewModel.getWindSpeed(),
                 clouds = list.first().clouds.all.toString()
             )
             listRecycler.add(HeadRecyclerSection(selectedDay = getDateDayString(data)))
@@ -181,12 +181,4 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
 
     }
 
-//    fun onBackPressed() {
-//        if (back_pressed + 2000 > System.currentTimeMillis()) {
-//            super.onBackPressed()
-//        } else {
-//            Toast.makeText(requireContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show()
-//        }
-//        back_pressed = System.currentTimeMillis()
-//    }
 }

@@ -23,30 +23,23 @@ class SharedViewModel @Inject constructor(
     private val days = MutableLiveData<List<DailySection>>()
     private val hourly = MutableLiveData<List<HourlySection>>()
 
-
     val hourlySection = hourly
     val dayCardSection = dayCard
     val parametersDaySection = parametersDay
     val dailySection = days
 
+    //settings
     private var screen = MutableLiveData<Int>()
     val startScreen = screen
     var setSelectCity = ""
-    var units: String? = null
-    var unitsText = ""
-    var windSpeedText = ""
-//    var setMs = false
-//    var setMh = false // * 2.237
-
+    private var units: String? = null
+    private var unitsText = ""
+    private var windSpeedText = ""
 
     // kyiv
     private val latKyiv = 50.4501
     private val lonKyiv = 30.5234
     private val city = "kyiv"
-
-    fun setScreen(int: Int) {
-        screen.postValue(int)
-    }
 
     fun getDailyWeather() = viewModelScope.launch {
         weatherRepository.getDailyWeather(city, units ?: "").let { response ->
@@ -56,7 +49,7 @@ class SharedViewModel @Inject constructor(
                         textCity = it.name,
                         imageIcon = it.weather[0].icon,
                         textClouds = it.weather[0].main,
-                        textTemp = it.main.temp.toString() + unitsText
+                        textTemp = it.main.temp.toInt().toString() + unitsText
                     )
                 }
                 parametersDay.value = response.body()?.let {
@@ -81,7 +74,7 @@ class SharedViewModel @Inject constructor(
                         textCity = it.timezone,
                         imageIcon = it.current.weather[0].icon,
                         textClouds = it.current.weather[0].main,
-                        textTemp = it.current.temp.toString() + unitsText
+                        textTemp = it.current.temp.toInt().toString() + unitsText
                     )
                 }
                 parametersDay.value = response.body()?.let {
@@ -104,7 +97,6 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-
     fun getHourlyWeather(selectedData: String) = viewModelScope.launch {
 
         weatherRepository.getHourlyWeather(city_name = city, units = units ?: "").let { response ->
@@ -112,11 +104,29 @@ class SharedViewModel @Inject constructor(
                 hourly.value = response.body()?.list?.filter { element ->
                     getSelectedData(element.dt) == selectedData
                 }?.apply {
-                    this.map { it.main.temp_text = it.main.temp.toString() + unitsText }
+                    this.map { it.main.temp_text = it.main.temp.toInt().toString() + unitsText }
                 }
             } else {
                 Log.i("TAG_VIEW_MODEL", "getHourlyWeather: ${response.errorBody().toString()}")
             }
         }
+    }
+
+    fun getWindSpeed() = windSpeedText
+
+    fun initUnits(unit : String){
+        units = unit
+    }
+
+    fun initUnitsText(units: String){
+        unitsText = units
+    }
+
+    fun initWindSpeed(speed: String){
+        windSpeedText = speed
+    }
+
+    fun setScreen(int: Int) {
+        screen.postValue(int)
     }
 }

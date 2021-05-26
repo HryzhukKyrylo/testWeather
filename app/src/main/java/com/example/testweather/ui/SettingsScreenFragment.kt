@@ -58,9 +58,9 @@ class SettingsScreenFragment : Fragment() {
         iwFahrenheit.setOnClickListener {
             iwCelsius.setImageResource(R.drawable.ic_celsius__1_)
             iwFahrenheit.setImageResource(R.drawable.ic_fahrenheit)
-            prefs.units = Const.FAHRENHEIT_UNITS
-            sharedViewModel.units = Const.FAHRENHEIT_UNITS
             // initSettings
+            prefs.units = Const.FAHRENHEIT_UNITS
+            sharedViewModel.initUnits(Const.FAHRENHEIT_UNITS)
             prefs.fahrenheitSet = true
             prefs.celsiusSet = false
             prefs.units_text = Const.FAHRENHEIT_PREF
@@ -68,8 +68,9 @@ class SettingsScreenFragment : Fragment() {
         iwCelsius.setOnClickListener {
             iwFahrenheit.setImageResource(R.drawable.ic_fahrenheit__1_)
             iwCelsius.setImageResource(R.drawable.ic_celsius__1___1_)
+            // initSettings
             prefs.units = Const.CELSIUS_UNITS
-            sharedViewModel.units = Const.CELSIUS_UNITS
+            sharedViewModel.initUnits(Const.CELSIUS_UNITS)
             prefs.celsiusSet = true
             prefs.fahrenheitSet = false
             prefs.units_text = Const.CELSIUS_PREF
@@ -109,9 +110,8 @@ class SettingsScreenFragment : Fragment() {
         twM_s.setOnClickListener {
             twM_H.setTextColor(resources.getColor(R.color.black))
             twM_s.setTextColor(resources.getColor(R.color.myBlue))
-
-            prefs.windSpeed = R.string.m_s
             // initSettings
+            prefs.windSpeed = R.string.m_s
             prefs.m_sSet = true
             prefs.m_hSet = false
 
@@ -119,9 +119,8 @@ class SettingsScreenFragment : Fragment() {
         twM_H.setOnClickListener {
             twM_s.setTextColor(resources.getColor(R.color.black))
             twM_H.setTextColor(resources.getColor(R.color.myBlue))
-
-            prefs.windSpeed = R.string.mil_h
             // initSettings
+            prefs.windSpeed = R.string.mil_h
             prefs.m_sSet = false
             prefs.m_hSet = true
 
