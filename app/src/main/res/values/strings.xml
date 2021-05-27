@@ -18,4 +18,8 @@
     <string name="description_cloudiness">Description cloudiness</string>
     <string name="not_connection">No internet connection</string>
     <string name="back_press">Нажмите еще раз для выхода!</string>
+    <string name="action_settings">action settings</string>
+    <string name="menu_search">search</string>
+    <string name="search_hint">hint search</string>
+    <string name="search">Поиск</string>
 </resources>

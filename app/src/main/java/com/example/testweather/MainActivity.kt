@@ -13,12 +13,4 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    override fun onBackPressed() {
-        if(backPressed + 2000 > System.currentTimeMillis())
-            super.onBackPressed()
-        else
-            Toast.makeText(this, resources.getString(R.string.back_press), Toast.LENGTH_SHORT).show()
-        backPressed = System.currentTimeMillis()
-    }
-
 }
