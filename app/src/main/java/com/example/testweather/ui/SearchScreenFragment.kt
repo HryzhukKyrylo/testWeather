@@ -40,37 +40,37 @@ class SearchScreenFragment : Fragment() {
     }
 
     private fun initList() {
-        searchTextView.setOnSearchClickListener {
-            val text = searchTextView.query
-            Toast.makeText(requireContext(), text.toString(), Toast.LENGTH_SHORT).show()
-//            sharedViewModel.searchCity(text.toString(),geocoder)
-        }
-//        searchTextView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
-//            override fun onQueryTextSubmit(query: String?): Boolean {
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean {
-//                return true
-//            }
-//        })
-//        searchTextView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-//            override fun onQueryTextSubmit(query: String?): Boolean {
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean {
-//                return true
-//            }
-//
-//        })
+
+        searchTextView.maxWidth = Int.MAX_VALUE
+        searchTextView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                TODO("Not yet implemented")
+            }
+
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                TODO("Not yet implemented")
+            }
+
+        })
+        val searchView = searchTextView as androidx.appcompat.widget.SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return true
+            }
+
+        })
+
+
 
     }
 
 
 }
 
-private fun SearchView.setOnQueryTextListener(onQueryTextListener: SearchView.OnQueryTextListener) {
-
-}
 
