@@ -22,4 +22,5 @@
     <string name="menu_search">search</string>
     <string name="search_hint">hint search</string>
     <string name="search">Поиск</string>
+    <string name="found_city">Найденый город</string>
 </resources>

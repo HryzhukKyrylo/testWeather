@@ -1,5 +1,6 @@
 package com.example.testweather.ui.viewmodel
 
+import android.content.SharedPreferences
 import android.location.Geocoder
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -13,14 +14,19 @@ import com.example.testweather.repository.WeatherRepository
 import com.example.testweather.ui.weather.adapter.WeatherItem
 import com.example.testweather.util.getDateDayString
 import com.example.testweather.util.getSelectedData
+import com.example.testweather.util.preference.PreferenceHelper.citySearch
+import com.example.testweather.util.preference.PreferenceHelper.latSearch
+import com.example.testweather.util.preference.PreferenceHelper.lonSearch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) : ViewModel() {
+
     private val dayCard = MutableLiveData<DayCardSection>()
     private val listRecycler = MutableLiveData<List<WeatherItem>>()
 
@@ -30,22 +36,30 @@ class SharedViewModel @Inject constructor(
     //settings
     private var screen = MutableLiveData<Int>()
     val startScreen = screen
-    var setSelectCity = ""
     private var units: String? = null
     private var unitsText = ""
     private var windSpeedText = ""
+    private var milInHour = false
 
     // kyiv
-    private var latKyiv = 50.4501
-    private var lonKyiv = 30.5234
-    private var city = "kyiv"
+//    private var latKyiv = 50.4501
+//    private var lonKyiv = 30.5234
+//    private var cityKiyv = "kyiv"
 
-    fun getDailyWeather() = viewModelScope.launch {
+    private val searchCity = MutableLiveData<String>()
+    val city = searchCity
+    private val searchLat = MutableLiveData<Double>()
+    val lat = searchLat
+    private val searchLon = MutableLiveData<Double>()
+    val lon = searchLon
+
+    fun getDayItemWeather() = viewModelScope.launch {
+        val city = city.value ?: ""
         weatherRepository.getDailyWeather(city, units ?: "").let { response ->
             if (response.isSuccessful) {
                 dayCard.value = response.body()?.let {
                     DayCardSection(
-                        textCity = it.name,
+                        textCity = city,
                         imageIcon = it.weather[0].icon,
                         textClouds = it.weather[0].main,
                         textTemp = it.main.temp.toInt().toString() + unitsText
@@ -57,14 +71,16 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun getDayWeather() = viewModelScope.launch {
+    private fun getDayWeather() = viewModelScope.launch {
+        val city = city.value ?: ""
         weatherRepository.getDailyWeather(city, units ?: "").let { response ->
             if (response.isSuccessful) {
                 response.body()?.let {
                     ParametersDayRecyclerSection(
                         pressure = it.main.pressure.toString(),
                         humidity = it.main.humidity.toString(),
-                        windSpeed = it.wind.speed.toString() + windSpeedText,
+                        windSpeed = it.wind.speed.times(if (milInHour) 2.237 else 1.0)
+                            .toString() + windSpeedText,
                         clouds = it.clouds.all.toString()
                     )
                 }?.let { listRecycler.value = listOf<WeatherItem>(it) }
@@ -76,66 +92,109 @@ class SharedViewModel @Inject constructor(
 
     fun getWeather() {
         when (startScreen.value) {
-            Const.WEEK_SECTION -> getWeekWeather()
-            Const.THREE_DAY_SECTION -> getWeekWeather()
             Const.DAILY_SECTION -> getDayWeather()
-
+            else -> getWeekWeather()
         }
     }
 
-    fun getWeekWeather() = viewModelScope.launch {
-        weatherRepository.getWeekWeather(latKyiv, lonKyiv, units ?: "").let { response ->
-            if (response.isSuccessful) {
-
-                val list = screen.value?.let {
-                    response.body()?.dailySection?.take(it)?.apply {
-                        this.map { it.temp.dayText = it.temp.day.toInt().toString() + unitsText }
+    private fun getWeekWeather() = viewModelScope.launch {
+        val latForSearch = lat.value ?: 0.0
+        val lonForSearch = lon.value ?: 0.0
+        weatherRepository.getWeekWeather(latForSearch, lonForSearch, units ?: "")
+            .let { response ->
+                if (response.isSuccessful) {
+                    val list = screen.value?.let {
+                        response.body()?.dailySection?.take(it)?.apply {
+                            this.map { section ->
+                                section.temp.dayText =
+                                    section.temp.day.toInt().toString() + unitsText
+                            }
+                        }
                     }
+                    listRecycler.value = list!!
+                } else {
+                    Log.i(
+                        "TAG_VIEW_MODEL",
+                        "getWeekWeather: ${response.errorBody().toString()}"
+                    )
                 }
-                listRecycler.value = list!!
-            } else {
-                Log.i("TAG_VIEW_MODEL", "getWeekWeather: ${response.errorBody().toString()}")
             }
-        }
     }
 
     fun getHourlyWeather(selectedData: Int) = viewModelScope.launch {
+        city.value?.let { city ->
+            weatherRepository.getHourlyWeather(city_name = city, units = units ?: "")
+                .let { response ->
+                    if (response.isSuccessful) {
+                        val data = getSelectedData(selectedData)
+                        val list = response.body()?.list?.filter { element ->
+                            getSelectedData(element.dt) == data
+                        }?.apply {
+                            this.map {
+                                it.main.temp_text = it.main.temp.toInt().toString() + unitsText
+                            }
+                        }
+                        if (milInHour) {
 
-        weatherRepository.getHourlyWeather(city_name = city, units = units ?: "").let { response ->
-            if (response.isSuccessful) {
-                val data = getSelectedData(selectedData)
-                val list = response.body()?.list?.filter { element ->
-                    getSelectedData(element.dt) == data
-                }?.apply {
-                    this.map { it.main.temp_text = it.main.temp.toInt().toString() + unitsText }
+                        }
+
+                        val items = ParametersDayRecyclerSection(
+                            pressure = list?.first()?.main?.pressure.toString(),
+                            humidity = list?.first()?.main?.humidity.toString(),
+                            windSpeed = list?.first()?.wind?.speed?.times(if (milInHour) 2.237 else 1.0)
+                                .toString() + windSpeedText,
+                            clouds = list?.first()?.clouds?.all.toString()
+                        )
+                        val listt = mutableListOf<WeatherItem>()
+                        listt.add(HeadRecyclerSection(selectedDay = getDateDayString(selectedData)))
+                        listt.addAll(list!!)
+                        listt.add(items)
+                        listRecycler.value = listt
+
+
+                    } else {
+                        Log.i(
+                            "TAG_VIEW_MODEL",
+                            "getHourlyWeather: ${response.errorBody().toString()}"
+                        )
+                    }
                 }
-
-                val items = ParametersDayRecyclerSection(
-                    pressure = list?.first()?.main?.pressure.toString(),
-                    humidity = list?.first()?.main?.humidity.toString(),
-                    windSpeed = list?.first()?.wind?.speed.toString() + windSpeedText,
-                    clouds = list?.first()?.clouds?.all.toString()
-                )
-                val listt = mutableListOf<WeatherItem>()
-                listt.add(HeadRecyclerSection(selectedDay = getDateDayString(selectedData)))
-                listt.addAll(list!!)
-                listt.add(items)
-                listRecycler.value = listt
-
-
-            } else {
-                Log.i("TAG_VIEW_MODEL", "getHourlyWeather: ${response.errorBody().toString()}")
-            }
         }
     }
-//    fun searchCity(str: String, geocoder: Geocoder) :String{
-//        geocoder.getFromLocationName(str, 1).apply {
-//
-//        }
-//    }
+
+    fun searchCity(str: String, geocoder: Geocoder, prefs: SharedPreferences): Boolean {
+        val result = geocoder.getFromLocationName(str.uppercase(Locale.getDefault()), 1)
+        if (result.isNotEmpty()) {
+            setCitySearch(str.uppercase(Locale.getDefault()))
+            setLatSearch(result.first().latitude)
+            setLonSearch(result.first().longitude)
+
+            prefs.citySearch = str.uppercase(Locale.getDefault())
+            prefs.latSearch = result.first().latitude.toString()
+            prefs.lonSearch = result.first().longitude.toString()
+        }
+
+        return result.isNotEmpty()
+    }
 
     fun initUnits(unit: String) {
         units = unit
+    }
+
+    fun setLatSearch(lat: Double) {
+        searchLat.postValue(lat)
+    }
+
+    fun setLonSearch(lon: Double) {
+        searchLon.postValue(lon)
+    }
+
+    fun setCitySearch(city: String) {
+        searchCity.postValue(city)
+    }
+
+    fun setMilInHour(bol: Boolean) {
+        milInHour = bol
     }
 
     fun initUnitsText(units: String) {

@@ -15,6 +15,10 @@ object PreferenceHelper {
     const val WEATHER_WIND_SPEED = "SPEED_TEXT"
     const val WEATHER_M_H = "M_H"
     const val WEATHER_CITY = "CITY"
+    const val WEATHER_SET_CITY = "CITY_SET"
+    const val WEATHER_SET_LAT = "LAT_SET"
+    const val WEATHER_SET_LON = "LON_SET"
+
 
     fun customPreference(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
 
@@ -47,11 +51,25 @@ object PreferenceHelper {
             }
         }
 
-    var SharedPreferences.city
-        get() = getString(WEATHER_CITY, "")
+    var SharedPreferences.citySearch
+        get() = getString(WEATHER_SET_CITY, "default")
         set(value) {
             editMe {
-                it.putString(WEATHER_CITY, value)
+                it.putString(WEATHER_SET_CITY, value)
+            }
+        }
+    var SharedPreferences.latSearch
+        get() = getString(WEATHER_SET_LAT, "0.0")
+        set(value) {
+            editMe {
+                it.putString(WEATHER_SET_LAT, value)
+            }
+        }
+    var SharedPreferences.lonSearch
+        get() = getString(WEATHER_SET_LON, "0.0")
+        set(value) {
+            editMe {
+                it.putString(WEATHER_SET_LON, value)
             }
         }
 

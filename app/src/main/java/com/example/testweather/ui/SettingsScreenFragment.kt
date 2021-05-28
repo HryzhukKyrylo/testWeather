@@ -36,7 +36,6 @@ class SettingsScreenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         prefs = customPreference(requireContext(), CUSTOM_PREF_NAME)
         return inflater.inflate(R.layout.fragment_settings_screen, container, false)
     }
@@ -77,21 +76,21 @@ class SettingsScreenFragment : Fragment() {
         }
         twSelectCity.setOnClickListener {
             twSelectCity.setTextColor(resources.getColor(R.color.myBlue))
-            sharedViewModel.setSelectCity = "city"
             // initSettings
             prefs.citySet = true
+            NavHostFragment.findNavController(this).navigate(R.id.navigateSettingsToSearchScreen)
         }
         twDay.setOnClickListener {
-            twThreeDay.setTextColor(resources.getColor(R.color.black))
-            twWeek.setTextColor(resources.getColor(R.color.black))
+            twThreeDay.setTextColor(resources.getColor(R.color.color_black))
+            twWeek.setTextColor(resources.getColor(R.color.color_black))
             twDay.setTextColor(resources.getColor(R.color.myBlue))
             sharedViewModel.setScreen(Const.DAILY_SECTION)
             // initSettings
             prefs.screen = Const.DAILY_SECTION
         }
         twThreeDay.setOnClickListener {
-            twDay.setTextColor(resources.getColor(R.color.black))
-            twWeek.setTextColor(resources.getColor(R.color.black))
+            twDay.setTextColor(resources.getColor(R.color.color_black))
+            twWeek.setTextColor(resources.getColor(R.color.color_black))
             twThreeDay.setTextColor(resources.getColor(R.color.myBlue))
             sharedViewModel.setScreen(Const.THREE_DAY_SECTION)
             // initSettings
@@ -99,8 +98,8 @@ class SettingsScreenFragment : Fragment() {
 
         }
         twWeek.setOnClickListener {
-            twDay.setTextColor(resources.getColor(R.color.black))
-            twThreeDay.setTextColor(resources.getColor(R.color.black))
+            twDay.setTextColor(resources.getColor(R.color.color_black))
+            twThreeDay.setTextColor(resources.getColor(R.color.color_black))
             twWeek.setTextColor(resources.getColor(R.color.myBlue))
             sharedViewModel.setScreen(Const.WEEK_SECTION)
             // initSettings
@@ -108,7 +107,7 @@ class SettingsScreenFragment : Fragment() {
 
         }
         twM_s.setOnClickListener {
-            twM_H.setTextColor(resources.getColor(R.color.black))
+            twM_H.setTextColor(resources.getColor(R.color.color_black))
             twM_s.setTextColor(resources.getColor(R.color.myBlue))
             // initSettings
             prefs.windSpeed = R.string.m_s
@@ -117,7 +116,7 @@ class SettingsScreenFragment : Fragment() {
 
         }
         twM_H.setOnClickListener {
-            twM_s.setTextColor(resources.getColor(R.color.black))
+            twM_s.setTextColor(resources.getColor(R.color.color_black))
             twM_H.setTextColor(resources.getColor(R.color.myBlue))
             // initSettings
             prefs.windSpeed = R.string.mil_h
@@ -132,7 +131,12 @@ class SettingsScreenFragment : Fragment() {
         if (prefs.celsiusSet) iwCelsius.setImageResource(R.drawable.ic_celsius__1___1_)
         if (prefs.m_sSet) twM_s.setTextColor(resources.getColor(R.color.myBlue))
         if (prefs.m_hSet) twM_H.setTextColor(resources.getColor(R.color.myBlue))
-        if (prefs.citySet) twSelectCity.setTextColor(resources.getColor(R.color.myBlue))
+        if (prefs.citySet){
+            sharedViewModel.city.observe(viewLifecycleOwner,{
+                twSelectCity.text = it
+            })
+            twSelectCity.setTextColor(resources.getColor(R.color.myBlue))
+        }
         when (prefs.screen) {
             Const.DAILY_SECTION -> twDay.setTextColor(resources.getColor(R.color.myBlue))
             Const.THREE_DAY_SECTION -> twThreeDay.setTextColor(resources.getColor(R.color.myBlue))

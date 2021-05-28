@@ -10,7 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.navigation.fragment.NavHostFragment
 import com.example.testweather.R
 import com.example.testweather.const.Const.CUSTOM_PREF_NAME
@@ -18,6 +21,10 @@ import com.example.testweather.databinding.FragmentWeatherScreenBinding
 import com.example.testweather.ui.viewmodel.SharedViewModel
 import com.example.testweather.util.IconHelper
 import com.example.testweather.util.preference.PreferenceHelper
+import com.example.testweather.util.preference.PreferenceHelper.citySearch
+import com.example.testweather.util.preference.PreferenceHelper.latSearch
+import com.example.testweather.util.preference.PreferenceHelper.lonSearch
+import com.example.testweather.util.preference.PreferenceHelper.m_hSet
 import com.example.testweather.util.preference.PreferenceHelper.screen
 import com.example.testweather.util.preference.PreferenceHelper.units
 import com.example.testweather.util.preference.PreferenceHelper.units_text
@@ -31,16 +38,24 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var prefs: SharedPreferences
     private var args_for_fragment = 0
-    override fun onStart() {
-        super.onStart()
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
         with(sharedViewModel) {
             setScreen(prefs.screen)
             initUnits(prefs.units.toString())
             initUnitsText(prefs.units_text.toString())
             initWindSpeed(getString(prefs.windSpeed))
+            setMilInHour(prefs.m_hSet)
+
+            prefs.citySearch?.let { setCitySearch(it) }
+            prefs.latSearch?.let { setLatSearch(it.toDouble()) }
+            prefs.lonSearch?.let { setLonSearch(it.toDouble()) }
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,16 +68,14 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (checkConnectivity(requireContext())) {
-            sharedViewModel.startScreen.observe(viewLifecycleOwner, {
-                startScreen()
-            })
+            startScreen()
         } else {
             Toast.makeText(requireContext(), getString(R.string.not_connection), Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
-    fun checkConnectivity(context: Context): Boolean {
+    private fun checkConnectivity(context: Context): Boolean {
 
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -77,7 +90,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
     }
 
     private fun startScreen() {
-        sharedViewModel.getDailyWeather()
+        sharedViewModel.getDayItemWeather()
         sharedViewModel.dayCardSection.observe(viewLifecycleOwner, {
             initCardView(it.textCity, it.imageIcon, it.textClouds, it.textTemp)
         })
@@ -85,7 +98,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
         val bundle = bundleOf("some_int" to 0)
         childFragmentManager.commit {
             setReorderingAllowed(true)
-            replace<WeatherRecyclerFragment>(R.id.fragmentContainer,args = bundle)
+            replace<WeatherRecyclerFragment>(R.id.fragmentContainer, args = bundle)
         }
     }
 
@@ -110,7 +123,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
         val bundle = bundleOf("some_int" to args_for_fragment)
         childFragmentManager.commit {
             setReorderingAllowed(true)
-            replace<WeatherRecyclerFragment>(R.id.fragmentContainer,args = bundle)
+            replace<WeatherRecyclerFragment>(R.id.fragmentContainer, args = bundle)
             addToBackStack(null) // name can be null
 
         }
