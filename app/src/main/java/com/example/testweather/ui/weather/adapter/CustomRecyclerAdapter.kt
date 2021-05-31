@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testweather.const.Const
 import com.example.testweather.databinding.ItemColumnDayBinding
@@ -54,16 +53,12 @@ class CustomRecyclerAdapter(
                 binding.root.cardElevation = 8f
                 binding.root.elevation = 12f
                 binding.root.layoutParams = param
-
             }
 
             binding.root.setOnClickListener {
                 listener.onEntryClicked(item.dt)
             }
             binding.twTextInItem.text = getDateString(item.dt)
-            binding.twTextInItem.setOnClickListener {
-                listener.onEntryClicked(item.dt)
-            }
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.temp.dayText
 

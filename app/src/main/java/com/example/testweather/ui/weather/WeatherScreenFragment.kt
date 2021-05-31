@@ -43,19 +43,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefs = PreferenceHelper.customPreference(requireContext(), CUSTOM_PREF_NAME)
-        with(sharedViewModel) {
-            setScreen(prefs.screen)
-            initUnits(prefs.units.toString())
-            initUnitsText(prefs.units_text.toString())
-            initWindSpeed(getString(prefs.windSpeed))
-            setMilInHour(prefs.m_hSet)
-
-            prefs.citySearch?.let { setCitySearch(it) }
-            prefs.latSearch?.let { setLatSearch(it.toDouble()) }
-            prefs.lonSearch?.let { setLonSearch(it.toDouble()) }
-        }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,6 +56,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (checkConnectivity(requireContext())) {
+            initSettings()
             startScreen()
         } else {
             Toast.makeText(requireContext(), getString(R.string.not_connection), Toast.LENGTH_SHORT)
@@ -126,6 +115,20 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
             replace<WeatherRecyclerFragment>(R.id.fragmentContainer, args = bundle)
             addToBackStack(null) // name can be null
 
+        }
+    }
+
+    private fun initSettings() {
+        with(sharedViewModel) {
+            setScreen(prefs.screen)
+            initUnits(prefs.units.toString())
+            initUnitsText(prefs.units_text.toString())
+            initWindSpeed(getString(prefs.windSpeed))
+            setMilInHour(prefs.m_hSet)
+
+            prefs.citySearch?.let { setCitySearch(it) }
+            prefs.latSearch?.let { setLatSearch(it.toDouble()) }
+            prefs.lonSearch?.let { setLonSearch(it.toDouble()) }
         }
     }
 

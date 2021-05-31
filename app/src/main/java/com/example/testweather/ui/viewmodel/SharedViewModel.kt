@@ -34,8 +34,15 @@ class SharedViewModel @Inject constructor(
     val listForRecycler = listRecycler
 
     //settings
+    private val searchCity = MutableLiveData<String>()
+    private val searchLat = MutableLiveData<Double>()
+    private val searchLon = MutableLiveData<Double>()
     private var screen = MutableLiveData<Int>()
-    val startScreen = screen
+
+    private val startScreen = screen
+    val city = searchCity
+    val lat = searchLat
+    val lon = searchLon
     private var units: String? = null
     private var unitsText = ""
     private var windSpeedText = ""
@@ -46,12 +53,6 @@ class SharedViewModel @Inject constructor(
 //    private var lonKyiv = 30.5234
 //    private var cityKiyv = "kyiv"
 
-    private val searchCity = MutableLiveData<String>()
-    val city = searchCity
-    private val searchLat = MutableLiveData<Double>()
-    val lat = searchLat
-    private val searchLon = MutableLiveData<Double>()
-    val lon = searchLon
 
     fun getDayItemWeather() = viewModelScope.launch {
         val city = city.value ?: ""
@@ -134,10 +135,6 @@ class SharedViewModel @Inject constructor(
                                 it.main.temp_text = it.main.temp.toInt().toString() + unitsText
                             }
                         }
-                        if (milInHour) {
-
-                        }
-
                         val items = ParametersDayRecyclerSection(
                             pressure = list?.first()?.main?.pressure.toString(),
                             humidity = list?.first()?.main?.humidity.toString(),

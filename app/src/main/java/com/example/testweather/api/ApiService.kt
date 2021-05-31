@@ -14,7 +14,7 @@ interface ApiService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("units") units: String = "",
-        @Query("exclude") exclude: String = "minutely,alerts",
+        @Query("exclude") exclude: String = "minutely,alerts,current,hourly",
         @Query("appid") appid: String = BuildConfig.API_KEY
     ): Response<WeekWeatherResponse>
 
