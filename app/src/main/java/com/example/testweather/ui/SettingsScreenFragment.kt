@@ -131,8 +131,8 @@ class SettingsScreenFragment : Fragment() {
         if (prefs.celsiusSet) iwCelsius.setImageResource(R.drawable.ic_celsius__1___1_)
         if (prefs.m_sSet) twM_s.setTextColor(resources.getColor(R.color.myBlue))
         if (prefs.m_hSet) twM_H.setTextColor(resources.getColor(R.color.myBlue))
-        if (prefs.citySet){
-            sharedViewModel.city.observe(viewLifecycleOwner,{
+        if (prefs.citySet) {
+            sharedViewModel.city.observe(viewLifecycleOwner, {
                 twSelectCity.text = it
             })
             twSelectCity.setTextColor(resources.getColor(R.color.myBlue))
@@ -142,7 +142,5 @@ class SettingsScreenFragment : Fragment() {
             Const.THREE_DAY_SECTION -> twThreeDay.setTextColor(resources.getColor(R.color.myBlue))
             Const.WEEK_SECTION -> twWeek.setTextColor(resources.getColor(R.color.myBlue))
         }
-
     }
-
 }

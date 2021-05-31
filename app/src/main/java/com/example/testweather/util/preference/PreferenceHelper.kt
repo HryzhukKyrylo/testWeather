@@ -22,7 +22,7 @@ object PreferenceHelper {
 
     fun customPreference(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
 
-    inline fun SharedPreferences.editMe(operation: (SharedPreferences.Editor) -> Unit) {
+    private inline fun SharedPreferences.editMe(operation: (SharedPreferences.Editor) -> Unit) {
         val editMe = edit()
         operation(editMe)
         editMe.apply()

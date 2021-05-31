@@ -16,6 +16,5 @@ object IconHelper {
             "50d" -> R.drawable.ic_fog
 
             else ->R.drawable.ic_cloudysun
-
     }
 }

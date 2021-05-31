@@ -14,10 +14,7 @@ data class DailySection(
     val weather: List<Weather>,
 ) : WeatherItem()
 
-
 data class Temp(
     val day: Double,
     var dayText: String,
 )
-
-

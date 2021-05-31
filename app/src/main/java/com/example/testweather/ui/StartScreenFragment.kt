@@ -48,5 +48,4 @@ class StartScreenFragment : Fragment() {
     companion object{
         private const val TIME_OUT: Long = 2000
     }
-
 }

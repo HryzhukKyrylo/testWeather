@@ -49,12 +49,6 @@ class SharedViewModel @Inject constructor(
     private var windSpeedText = ""
     private var milInHour = false
 
-    // kyiv
-//    private var latKyiv = 50.4501
-//    private var lonKyiv = 30.5234
-//    private var cityKiyv = "kyiv"
-
-
     fun getDayItemWeather() = viewModelScope.launch {
         val city = city.value ?: ""
         weatherRepository.getDailyWeather(city, units ?: "").let { response ->
@@ -62,8 +56,8 @@ class SharedViewModel @Inject constructor(
                 dayCard.value = response.body()?.let {
                     DayCardSection(
                         textCity = city,
-                        imageIcon = it.weather[0].icon,
-                        textClouds = it.weather[0].main,
+                        imageIcon = it.weather.first().icon,
+                        textClouds = it.weather.first().main,
                         textTemp = it.main.temp.toInt().toString() + unitsText
                     )
                 }
@@ -81,9 +75,7 @@ class SharedViewModel @Inject constructor(
                     ParametersDayRecyclerSection(
                         pressure = it.main.pressure.toString(),
                         humidity = it.main.humidity.toString(),
-                        windSpeed = DecimalFormat("#0.00").format
-                            (it.wind.speed.times(if (milInHour) 2.237 else 1.0))
-                                + windSpeedText,
+                        windSpeed = formatSpeed(it.wind.speed.times(if (milInHour) 2.237 else 1.0)),
                         clouds = it.clouds.all.toString()
                     )
                 }?.let { listRecycler.value = listOf<WeatherItem>(it) }
@@ -140,9 +132,9 @@ class SharedViewModel @Inject constructor(
                         val items = ParametersDayRecyclerSection(
                             pressure = list?.first()?.main?.pressure.toString(),
                             humidity = list?.first()?.main?.humidity.toString(),
-                            windSpeed = DecimalFormat("#0.00").format
-                                (list?.first()?.wind?.speed?.times(if (milInHour) 2.237 else 1.0))
-                                .toString() + " " + windSpeedText,
+                            windSpeed = list?.first()?.wind?.speed?.times(if (milInHour) 2.237 else 1.0)?.let {
+                                formatSpeed(it)
+                            }.toString(),
                             clouds = list?.first()?.clouds?.all.toString()
                         )
                         val listForRecycler = mutableListOf<WeatherItem>()
@@ -214,4 +206,8 @@ class SharedViewModel @Inject constructor(
     fun setScreen(int: Int) {
         screen.value = int
     }
+
+    private fun formatSpeed(speed: Double) =
+        DecimalFormat("#0.00").format(speed) + " " + windSpeedText
+
 }
