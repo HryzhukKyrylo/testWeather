@@ -28,10 +28,10 @@ class CustomRecyclerAdapter(
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun bind(item: ParametersDayRecyclerSection) {
-            binding.twPressure.text = item.pressure + "hPa"
-            binding.twHumidity.text = item.humidity + "%"
+            binding.twPressure.text = item.pressure + " hPa"
+            binding.twHumidity.text = item.humidity + " %"
             binding.twWind.text = item.windSpeed
-            binding.twClouds.text = item.clouds + "%"
+            binding.twClouds.text = item.clouds + " %"
         }
     }
 
