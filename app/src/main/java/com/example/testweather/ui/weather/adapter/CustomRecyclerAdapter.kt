@@ -48,6 +48,15 @@ class CustomRecyclerAdapter(
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(item: DailySection) {
+            if(absoluteAdapterPosition == 0){
+                val param = binding.root.layoutParams as ViewGroup.MarginLayoutParams
+                param.setMargins(5,15,5,10)
+                binding.root.cardElevation = 8f
+                binding.root.elevation = 12f
+                binding.root.layoutParams = param
+
+            }
+
             binding.root.setOnClickListener {
                 listener.onEntryClicked(item.dt)
             }

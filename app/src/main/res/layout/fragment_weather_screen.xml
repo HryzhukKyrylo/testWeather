@@ -52,70 +52,71 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="City" />
 
-  <androidx.cardview.widget.CardView
-      android:id="@+id/cardView"
-      android:layout_width="match_parent"
-
-      android:layout_height="100dp"
-      android:layout_marginLeft="15dp"
-      android:layout_marginTop="8dp"
-      android:layout_marginRight="15dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btSettings">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-      <androidx.constraintlayout.widget.Guideline
-          android:id="@+id/guideline7"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          app:layout_constraintGuide_percent="0.5" />
+        android:layout_height="100dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="15dp"
+        app:cardElevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btSettings">
 
-      <ImageView
-          android:id="@+id/imageCard"
-          android:layout_width="0dp"
-          android:layout_height="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-          android:layout_margin="10dp"
-          android:contentDescription="@string/image_description"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toStartOf="@+id/guideline7"
-          app:layout_constraintHorizontal_bias="0.47"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          tools:srcCompat="@drawable/ic_cloudy" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
-        <TextView
-            android:id="@+id/twCardName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/twCardTemp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline7"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Oblachnoooo" />
+            <ImageView
+                android:id="@+id/imageCard"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
 
-        <TextView
-            android:id="@+id/twCardTemp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline7"
-            app:layout_constraintTop_toBottomOf="@+id/twCardName"
-            tools:text="12'C" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-  </androidx.cardview.widget.CardView>
+                android:layout_margin="10dp"
+                android:contentDescription="@string/image_description"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline7"
+                app:layout_constraintHorizontal_bias="0.47"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/ic_cloudy" />
+
+            <TextView
+                android:id="@+id/twCardName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/twCardTemp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/guideline7"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Oblachnoooo" />
+
+            <TextView
+                android:id="@+id/twCardTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/guideline7"
+                app:layout_constraintTop_toBottomOf="@+id/twCardName"
+                tools:text="12'C" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
     <androidx.fragment.app.FragmentContainerView
         xmlns:android="http://schemas.android.com/apk/res/android"

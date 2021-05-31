@@ -182,15 +182,15 @@ class SharedViewModel @Inject constructor(
     }
 
     fun setLatSearch(lat: Double) {
-        searchLat.postValue(lat)
+        searchLat.value = lat
     }
 
     fun setLonSearch(lon: Double) {
-        searchLon.postValue(lon)
+        searchLon.value = lon
     }
 
     fun setCitySearch(city: String) {
-        searchCity.postValue(city)
+        searchCity.value = city
     }
 
     fun setMilInHour(bol: Boolean) {
@@ -206,6 +206,6 @@ class SharedViewModel @Inject constructor(
     }
 
     fun setScreen(int: Int) {
-        screen.postValue(int)
+        screen.value = int
     }
 }
