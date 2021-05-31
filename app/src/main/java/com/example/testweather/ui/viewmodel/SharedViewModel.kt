@@ -19,6 +19,7 @@ import com.example.testweather.util.preference.PreferenceHelper.latSearch
 import com.example.testweather.util.preference.PreferenceHelper.lonSearch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -80,8 +81,9 @@ class SharedViewModel @Inject constructor(
                     ParametersDayRecyclerSection(
                         pressure = it.main.pressure.toString(),
                         humidity = it.main.humidity.toString(),
-                        windSpeed = it.wind.speed.times(if (milInHour) 2.237 else 1.0)
-                            .toString() + windSpeedText,
+                        windSpeed = DecimalFormat("#0.00").format
+                            (it.wind.speed.times(if (milInHour) 2.237 else 1.0))
+                             + windSpeedText,
                         clouds = it.clouds.all.toString()
                     )
                 }?.let { listRecycler.value = listOf<WeatherItem>(it) }
@@ -138,15 +140,15 @@ class SharedViewModel @Inject constructor(
                         val items = ParametersDayRecyclerSection(
                             pressure = list?.first()?.main?.pressure.toString(),
                             humidity = list?.first()?.main?.humidity.toString(),
-                            windSpeed = list?.first()?.wind?.speed?.times(if (milInHour) 2.237 else 1.0)
-                                .toString() + windSpeedText,
+                            windSpeed = DecimalFormat("#0.00").format
+                                (list?.first()?.wind?.speed?.times(if (milInHour) 2.237 else 1.0)).toString() + windSpeedText,
                             clouds = list?.first()?.clouds?.all.toString()
                         )
-                        val listt = mutableListOf<WeatherItem>()
-                        listt.add(HeadRecyclerSection(selectedDay = getDateDayString(selectedData)))
-                        listt.addAll(list!!)
-                        listt.add(items)
-                        listRecycler.value = listt
+                        val listForRecycler = mutableListOf<WeatherItem>()
+                        listForRecycler.add(HeadRecyclerSection(selectedDay = getDateDayString(selectedData)))
+                        listForRecycler.addAll(list!!)
+                        listForRecycler.add(items)
+                        listRecycler.value = listForRecycler
 
 
                     } else {
