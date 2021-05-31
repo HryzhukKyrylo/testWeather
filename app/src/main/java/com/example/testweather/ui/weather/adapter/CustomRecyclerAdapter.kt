@@ -54,7 +54,7 @@ class CustomRecyclerAdapter(
                 listener.onEntryClicked(item.dt)
             }
             binding.twTextInItem.text = getDateString(item.dt)
-            binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
+            binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather.first().icon))
             binding.twTempInItem.text = item.temp.dayText
         }
     }
@@ -64,7 +64,7 @@ class CustomRecyclerAdapter(
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(item: HourlySection) {
             binding.twTextInItem.text = getHourData(item.dt)
-            binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
+            binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather.first().icon))
             binding.twTempInItem.text = item.main.temp_text
         }
     }

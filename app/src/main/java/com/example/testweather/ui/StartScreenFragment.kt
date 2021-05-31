@@ -25,7 +25,7 @@ class StartScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         showLaunch()
         GlobalScope.launch {
-            delay(TIME_OUT)
+             delay(TIME_OUT)
             withContext(Dispatchers.Main){
                 moveToNext()
             }
