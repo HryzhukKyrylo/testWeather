@@ -23,4 +23,7 @@
     <string name="search_hint">hint search</string>
     <string name="search">Поиск</string>
     <string name="found_city">Найденый город</string>
+    <string name="select_city">Select City on Settings</string>
+    <string name="city_not_found">City not found</string>
+
 </resources>

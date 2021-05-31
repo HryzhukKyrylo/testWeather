@@ -32,13 +32,17 @@ class SearchScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbar_home.setNavigationIcon(R.drawable.ic_back)
-        toolbar_home.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
+        initToolbar()
         initSettings()
         initList()
         init()
+    }
+
+    private fun initToolbar() {
+        toolbar_home.setNavigationIcon(R.drawable.ic_white_back)
+        toolbar_home.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     private fun init() {
@@ -67,9 +71,11 @@ class SearchScreenFragment : Fragment() {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null)
-                    sharedViewModel.searchCity(query, geocoder, prefs)
-                else
-                    Toast.makeText(requireContext(), "City not found", Toast.LENGTH_SHORT).show()
+                    if(!sharedViewModel.searchCity(query, geocoder, prefs)) Toast.makeText(
+                        requireContext(),
+                        getString(R.string.city_not_found),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 return true
             }
 

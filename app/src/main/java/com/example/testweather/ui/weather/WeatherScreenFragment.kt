@@ -65,10 +65,9 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
     }
 
     private fun checkConnectivity(context: Context): Boolean {
-
+        // www.не помню откуда взял
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
 
         if (activeNetwork?.isConnected != null) {
@@ -106,15 +105,13 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
         }
     }
 
-
     override fun addSelectionsMarker(data: Int) {
         args_for_fragment = data
         val bundle = bundleOf("some_int" to args_for_fragment)
         childFragmentManager.commit {
             setReorderingAllowed(true)
             replace<WeatherRecyclerFragment>(R.id.fragmentContainer, args = bundle)
-            addToBackStack(null) // name can be null
-
+            addToBackStack(null)
         }
     }
 
@@ -126,10 +123,14 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
             initWindSpeed(getString(prefs.windSpeed))
             setMilInHour(prefs.m_hSet)
 
-            prefs.citySearch?.let { setCitySearch(it) }
+            prefs.citySearch?.let {
+                if( it == "default"){
+                    Toast.makeText(requireContext(), getText(R.string.select_city), Toast.LENGTH_SHORT).show()
+                } else
+                setCitySearch(it)
+            }
             prefs.latSearch?.let { setLatSearch(it.toDouble()) }
             prefs.lonSearch?.let { setLonSearch(it.toDouble()) }
         }
     }
-
 }

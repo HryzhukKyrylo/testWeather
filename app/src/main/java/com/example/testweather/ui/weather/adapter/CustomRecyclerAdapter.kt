@@ -1,7 +1,6 @@
 package com.example.testweather.ui.weather.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -20,12 +19,10 @@ import com.example.testweather.util.getHourData
 abstract class WeatherItem
 
 class CustomRecyclerAdapter(
-    val context: Context,
     private var itemList: List<WeatherItem>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var listener: OnItemClickedListener
-
 
     class DailyViewHolder(private val binding: ItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -40,52 +37,42 @@ class CustomRecyclerAdapter(
 
     class WeekViewHolder(
         private val listener: OnItemClickedListener,
-        val context: Context,
         private val binding: ItemColumnDayBinding
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(item: DailySection) {
-            if(absoluteAdapterPosition == 0){
+            if (absoluteAdapterPosition == 0) {
                 val param = binding.root.layoutParams as ViewGroup.MarginLayoutParams
-                param.setMargins(5,15,5,10)
+                param.setMargins(5, 15, 5, 10)
                 binding.root.cardElevation = 8f
                 binding.root.elevation = 12f
                 binding.root.layoutParams = param
             }
-
             binding.root.setOnClickListener {
                 listener.onEntryClicked(item.dt)
             }
             binding.twTextInItem.text = getDateString(item.dt)
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.temp.dayText
-
         }
     }
 
-    class HourViewHolder(
-        private val binding: ItemColumnDayBinding
-    ) :
+    class HourViewHolder(private val binding: ItemColumnDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(item: HourlySection) {
             binding.twTextInItem.text = getHourData(item.dt)
-//            binding.twTextInItem.text = getDate2String(item.dt)
             binding.iwImageInItem.setImageResource(IconHelper.getIconResource(item.weather[0].icon))
             binding.twTempInItem.text = item.main.temp_text
-
         }
     }
 
-    class HeadViewHolder(
-        private val binding: ItemNameOfDayBinding
-    ) :
+    class HeadViewHolder(private val binding: ItemNameOfDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HeadRecyclerSection) {
             binding.twDataOfDay.text = item.selectedDay
-
         }
     }
 
@@ -98,7 +85,6 @@ class CustomRecyclerAdapter(
             )
             Const.WEEK_SECTION -> WeekViewHolder(
                 listener,
-                context,
                 ItemColumnDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
@@ -144,7 +130,6 @@ class CustomRecyclerAdapter(
     fun setListener(listener: OnItemClickedListener) {
         this.listener = listener
     }
-
 
     interface OnItemClickedListener {
         fun onEntryClicked(data: Int)

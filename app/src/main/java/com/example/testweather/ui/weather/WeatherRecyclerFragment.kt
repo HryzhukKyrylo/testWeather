@@ -13,6 +13,7 @@ import com.example.testweather.R
 import com.example.testweather.databinding.FragmentWeatherRecyclerBinding
 import com.example.testweather.ui.viewmodel.SharedViewModel
 import com.example.testweather.ui.weather.adapter.CustomRecyclerAdapter
+import com.example.testweather.ui.weather.adapter.WeatherItem
 
 
 class WeatherRecyclerFragment : Fragment(), CustomRecyclerAdapter.OnItemClickedListener {
@@ -44,18 +45,14 @@ class WeatherRecyclerFragment : Fragment(), CustomRecyclerAdapter.OnItemClickedL
             0 -> {
                 sharedViewModel.getWeather()
                 sharedViewModel.listForRecycler.observe(viewLifecycleOwner, {
-                    recyclerAdapter = CustomRecyclerAdapter(requireContext(), it)
-                    recyclerAdapter.setListener(this@WeatherRecyclerFragment)
-                    startRecycler()
+                    startRecycler(it)
                 })
                 onBackPressed()
             }
             else -> {
                 sharedViewModel.getHourlyWeather(someArgs)
                 sharedViewModel.listForRecycler.observe(viewLifecycleOwner, {
-                    recyclerAdapter = CustomRecyclerAdapter(requireContext(), it)
-                    recyclerAdapter.setListener(this@WeatherRecyclerFragment)
-                    startRecycler()
+                    startRecycler(it)
                 })
             }
         }
@@ -86,7 +83,9 @@ class WeatherRecyclerFragment : Fragment(), CustomRecyclerAdapter.OnItemClickedL
         tabListener = fragment as? OnSelectionsListener
     }
 
-    private fun startRecycler() {
+    private fun startRecycler(list : List<WeatherItem>) {
+        recyclerAdapter = CustomRecyclerAdapter(list)
+        recyclerAdapter.setListener(this@WeatherRecyclerFragment)
         binding.recyclerView.apply {
             layoutManager =
                 LinearLayoutManager(
