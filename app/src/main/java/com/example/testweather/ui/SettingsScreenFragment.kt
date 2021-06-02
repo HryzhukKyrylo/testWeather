@@ -49,6 +49,7 @@ class SettingsScreenFragment : Fragment() {
     private fun initListeners() {
         btBack.setOnClickListener {
             findNavController().popBackStack()
+//            findNavController().navigate(R.id.navigateSettingsToWeatherScreen)
         }
         btSearch.setOnClickListener {
             NavHostFragment.findNavController(this).navigate(R.id.navigateSettingsToSearchScreen)

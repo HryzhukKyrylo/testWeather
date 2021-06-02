@@ -13,6 +13,7 @@
         <action
             android:id="@+id/action_startFragment_to_weatherScreenFragment"
             app:destination="@id/weatherScreenFragment"
+            app:exitAnim="@anim/to_right"
             app:popUpTo="@id/startFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -23,7 +24,11 @@
         tools:layout="@layout/fragment_weather_screen" >
         <action
             android:id="@+id/navigateWeatherToSettingsScreen"
-            app:destination="@id/settingsScreenFragment" />
+            app:destination="@id/settingsScreenFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
         <argument
             android:name="screen_args"
             app:argType="integer"
@@ -39,10 +44,20 @@
         tools:layout="@layout/fragment_settings_screen" >
         <action
             android:id="@+id/navigateSettingsToSearchScreen"
-            app:destination="@id/searchScreenFragment" />
+            app:destination="@id/searchScreenFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
         <action
             android:id="@+id/navigateSettingsToWeatherScreen"
-            app:destination="@id/weatherScreenFragment" />
+            app:destination="@id/weatherScreenFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left"
+            app:popUpTo="@id/settingsScreenFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/searchScreenFragment"
@@ -52,6 +67,10 @@
         <action
             android:id="@+id/navigateSearchToSettingsScreen"
             app:destination="@id/settingsScreenFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left"
             app:popUpTo="@id/searchScreenFragment"
             app:popUpToInclusive="true" />
     </fragment>
