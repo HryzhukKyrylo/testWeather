@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.testweather.R
 import com.example.testweather.const.Const
-import com.example.testweather.ui.viewmodel.SharedViewModel
+import com.example.testweather.viewmodel.SharedViewModel
 import com.example.testweather.util.preference.PreferenceHelper
 import kotlinx.android.synthetic.main.fragment_search_screen.*
 

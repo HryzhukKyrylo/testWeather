@@ -1,6 +1,6 @@
 package com.example.testweather.model
 
-import com.example.testweather.ui.weather.adapter.WeatherItem
+import com.example.testweather.adapter.WeatherItem
 import com.google.gson.annotations.SerializedName
 
 

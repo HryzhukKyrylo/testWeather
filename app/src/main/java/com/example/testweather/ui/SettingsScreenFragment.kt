@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.testweather.R
 import com.example.testweather.const.Const
 import com.example.testweather.const.Const.CUSTOM_PREF_NAME
-import com.example.testweather.ui.viewmodel.SharedViewModel
+import com.example.testweather.viewmodel.SharedViewModel
 import com.example.testweather.util.preference.PreferenceHelper.celsiusSet
 import com.example.testweather.util.preference.PreferenceHelper.citySet
 import com.example.testweather.util.preference.PreferenceHelper.customPreference

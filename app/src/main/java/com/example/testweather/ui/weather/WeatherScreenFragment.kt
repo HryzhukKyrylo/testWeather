@@ -1,9 +1,6 @@
 package com.example.testweather.ui.weather
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +15,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.testweather.R
 import com.example.testweather.const.Const.CUSTOM_PREF_NAME
 import com.example.testweather.databinding.FragmentWeatherScreenBinding
-import com.example.testweather.ui.viewmodel.SharedViewModel
+import com.example.testweather.viewmodel.SharedViewModel
 import com.example.testweather.util.IconHelper
+import com.example.testweather.util.checkConnectivity
 import com.example.testweather.util.preference.PreferenceHelper
 import com.example.testweather.util.preference.PreferenceHelper.citySearch
 import com.example.testweather.util.preference.PreferenceHelper.latSearch
@@ -61,19 +59,6 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
         } else {
             Toast.makeText(requireContext(), getString(R.string.not_connection), Toast.LENGTH_SHORT)
                 .show()
-        }
-    }
-
-    private fun checkConnectivity(context: Context): Boolean {
-        // www.не помню откуда взял
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-
-        if (activeNetwork?.isConnected != null) {
-            return activeNetwork.isConnected
-        } else {
-            return false
         }
     }
 

@@ -11,9 +11,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testweather.R
 import com.example.testweather.databinding.FragmentWeatherRecyclerBinding
-import com.example.testweather.ui.viewmodel.SharedViewModel
-import com.example.testweather.ui.weather.adapter.CustomRecyclerAdapter
-import com.example.testweather.ui.weather.adapter.WeatherItem
+import com.example.testweather.viewmodel.SharedViewModel
+import com.example.testweather.adapter.CustomRecyclerAdapter
+import com.example.testweather.adapter.WeatherItem
 
 
 class WeatherRecyclerFragment : Fragment(), CustomRecyclerAdapter.OnItemClickedListener {
