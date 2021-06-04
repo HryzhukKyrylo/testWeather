@@ -15,18 +15,18 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.testweather.R
 import com.example.testweather.const.Const.CUSTOM_PREF_NAME
 import com.example.testweather.databinding.FragmentWeatherScreenBinding
-import com.example.testweather.viewmodel.SharedViewModel
 import com.example.testweather.util.IconHelper
 import com.example.testweather.util.checkConnectivity
 import com.example.testweather.util.preference.PreferenceHelper
+import com.example.testweather.util.preference.PreferenceHelper.checkMilesInHour
 import com.example.testweather.util.preference.PreferenceHelper.citySearch
 import com.example.testweather.util.preference.PreferenceHelper.latSearch
 import com.example.testweather.util.preference.PreferenceHelper.lonSearch
-import com.example.testweather.util.preference.PreferenceHelper.m_hSet
 import com.example.testweather.util.preference.PreferenceHelper.screen
 import com.example.testweather.util.preference.PreferenceHelper.units
 import com.example.testweather.util.preference.PreferenceHelper.units_text
 import com.example.testweather.util.preference.PreferenceHelper.windSpeed
+import com.example.testweather.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,8 +35,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
     private lateinit var binding: FragmentWeatherScreenBinding
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var prefs: SharedPreferences
-    private var args_for_fragment = 0
-
+    private var argsForFragment = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,11 +47,12 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentWeatherScreenBinding.inflate(inflater, container, false)
-        initListeners()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initListeners()
+
         if (checkConnectivity(requireContext())) {
             initSettings()
             startScreen()
@@ -68,7 +68,7 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
             initCardView(it.textCity, it.imageIcon, it.textClouds, it.textTemp)
         })
 
-        val bundle = bundleOf("some_int" to 0)
+        val bundle = bundleOf(START_SCREEN_ARGS to START_SCREEN)
         childFragmentManager.commit {
             setReorderingAllowed(true)
             replace<WeatherRecyclerFragment>(R.id.fragmentContainer, args = bundle)
@@ -90,9 +90,9 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
         }
     }
 
-    override fun addSelectionsMarker(data: Int) {
-        args_for_fragment = data
-        val bundle = bundleOf("some_int" to args_for_fragment)
+    override fun addSelectionsMarker(selectedDayUnixFormat: Int) {
+        argsForFragment = selectedDayUnixFormat
+        val bundle = bundleOf(START_SCREEN_ARGS to argsForFragment)
         childFragmentManager.commit {
             setReorderingAllowed(true)
             replace<WeatherRecyclerFragment>(R.id.fragmentContainer, args = bundle)
@@ -106,16 +106,26 @@ class WeatherScreenFragment : Fragment(R.layout.fragment_weather_screen),
             initUnits(prefs.units.toString())
             initUnitsText(prefs.units_text.toString())
             initWindSpeed(getString(prefs.windSpeed))
-            setMilInHour(prefs.m_hSet)
+            setMilInHour(prefs.checkMilesInHour)
 
             prefs.citySearch?.let {
-                if( it == "default"){
-                    Toast.makeText(requireContext(), getText(R.string.select_city), Toast.LENGTH_SHORT).show()
+                if (it == "default") {
+                    Toast.makeText(
+                        requireContext(),
+                        getText(R.string.select_city),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else
-                setCitySearch(it)
+                    setCitySearch(it)
             }
             prefs.latSearch?.let { setLatSearch(it.toDouble()) }
             prefs.lonSearch?.let { setLonSearch(it.toDouble()) }
         }
+    }
+
+    companion object {
+        private const val START_SCREEN = 0
+        private const val START_SCREEN_ARGS = "screen_args"
+
     }
 }

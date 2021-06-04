@@ -12,6 +12,7 @@ import com.example.testweather.model.HeadRecyclerSection
 import com.example.testweather.model.ParametersDayRecyclerSection
 import com.example.testweather.repository.WeatherRepository
 import com.example.testweather.adapter.WeatherItem
+import com.example.testweather.model.HourlySection
 import com.example.testweather.util.getDateDayString
 import com.example.testweather.util.getSelectedData
 import com.example.testweather.util.preference.PreferenceHelper.citySearch
@@ -121,35 +122,13 @@ class SharedViewModel @Inject constructor(
             weatherRepository.getHourlyWeather(city_name = city, units = units ?: "")
                 .let { response ->
                     if (response.isSuccessful) {
-                        val data = getSelectedData(selectedData)
-                        val list = response.body()?.list?.filter { element ->
-                            getSelectedData(element.dt) == data
-                        }?.apply {
-                            this.map {
-                                it.main.temp_text = it.main.temp.toInt().toString() + unitsText
-                            }
-                        }
-                        val items = ParametersDayRecyclerSection(
-                            pressure = list?.first()?.main?.pressure.toString(),
-                            humidity = list?.first()?.main?.humidity.toString(),
-                            windSpeed = list?.first()?.wind?.speed?.times(if (milInHour) 2.237 else 1.0)?.let {
-                                formatSpeed(it)
-                            }.toString(),
-                            clouds = list?.first()?.clouds?.all.toString()
+                        val list = response.body()?.list?.let { formatHourlyList(it, selectedData) }
+                        val items = list?.let { parsingOnParameters(it) }
+                        addToListForRecycler(
+                            HeadRecyclerSection(selectedDay = getDateDayString(selectedData)),
+                            list!!,
+                            items!!
                         )
-                        val listForRecycler = mutableListOf<WeatherItem>()
-                        listForRecycler.add(
-                            HeadRecyclerSection(
-                                selectedDay = getDateDayString(
-                                    selectedData
-                                )
-                            )
-                        )
-                        listForRecycler.addAll(list!!)
-                        listForRecycler.add(items)
-                        listRecycler.value = listForRecycler
-
-
                     } else {
                         Log.i(
                             "TAG_VIEW_MODEL",
@@ -158,6 +137,40 @@ class SharedViewModel @Inject constructor(
                     }
                 }
         }
+    }
+    private fun formatHourlyList(
+        list: List<HourlySection>,
+        selectedData: Int
+    ): List<HourlySection> {
+        val data = getSelectedData(selectedData)
+        return list.filter { element ->
+            getSelectedData(element.dt) == data
+        }.apply {
+            this.map {
+                it.main.temp_text = it.main.temp.toInt().toString() + unitsText
+            }
+        }
+    }
+
+    private fun parsingOnParameters(list: List<HourlySection>) = ParametersDayRecyclerSection(
+        pressure = list.first().main.pressure.toString(),
+        humidity = list.first().main.humidity.toString(),
+        windSpeed = list.first().wind.speed.times(if (milInHour) 2.237 else 1.0).let {
+            formatSpeed(it)
+        }.toString(),
+        clouds = list.first().clouds.all.toString()
+    )
+
+    private fun addToListForRecycler(
+        head: HeadRecyclerSection,
+        list: List<HourlySection>,
+        items: ParametersDayRecyclerSection
+    ) {
+        val listForRecycler = mutableListOf<WeatherItem>()
+        listForRecycler.add(head)
+        listForRecycler.addAll(list)
+        listForRecycler.add(items)
+        listRecycler.value = listForRecycler
     }
 
     fun searchCity(str: String, geocoder: Geocoder, prefs: SharedPreferences): Boolean {

@@ -24,4 +24,13 @@
     <string name="select_city">Select City on Settings</string>
     <string name="city_not_found">City not found</string>
 
+    <string name="hPa"> hPa</string>
+    <string name="procent"> %</string>
+
+
+    <string name="settings_default">Default</string>
+    <string name="settings_city">City =</string>
+    <string name="settings_latitude">Default</string>
+    <string name="settings_longitude">Default</string>
+
 </resources>

@@ -33,7 +33,7 @@
       android:layout_height="wrap_content"
       android:contentDescription="@string/image_description"
       android:scaleType="centerCrop"
-      android:src="@drawable/ic_more"
+      android:src="@drawable/ic_more_button"
       app:layout_constraintEnd_toEndOf="@+id/imageView"
       app:layout_constraintTop_toTopOf="parent"
       tools:contentDescription="description" />

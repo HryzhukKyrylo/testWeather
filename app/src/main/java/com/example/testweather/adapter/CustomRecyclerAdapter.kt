@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.testweather.const.Const
+import com.example.testweather.R
 import com.example.testweather.databinding.ItemColumnDayBinding
 import com.example.testweather.databinding.ItemDayBinding
 import com.example.testweather.databinding.ItemNameOfDayBinding
@@ -27,11 +27,16 @@ class CustomRecyclerAdapter(
     class DailyViewHolder(private val binding: ItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
+        // all strings move to resource as "%1$s ..."
+        // Done
         fun bind(item: ParametersDayRecyclerSection) {
-            binding.twPressure.text = item.pressure + " hPa"
-            binding.twHumidity.text = item.humidity + " %"
+            binding.twPressure.text =
+                item.pressure + binding.root.context.resources.getString(R.string.hPa)
+            binding.twHumidity.text =
+                item.humidity + binding.root.context.resources.getString(R.string.procent)
             binding.twWind.text = item.windSpeed
-            binding.twClouds.text = item.clouds + " %"
+            binding.twClouds.text =
+                item.clouds + binding.root.context.resources.getString(R.string.procent)
         }
     }
 
@@ -76,25 +81,25 @@ class CustomRecyclerAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            Const.DAILY_SECTION -> DailyViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            DAILY_SECTION -> DailyViewHolder(
                 ItemDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-            Const.WEEK_SECTION -> WeekViewHolder(
+            WEEK_SECTION -> WeekViewHolder(
                 listener,
                 ItemColumnDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-            Const.HOUR_SECTION -> HourViewHolder(
+            HOUR_SECTION -> HourViewHolder(
                 ItemColumnDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
             )
-            Const.HEADER_SECTION -> HeadViewHolder(
+            HEADER_SECTION -> HeadViewHolder(
                 ItemNameOfDayBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
@@ -103,29 +108,26 @@ class CustomRecyclerAdapter(
                 throw IllegalArgumentException("Invalid type of data")
             }
         }
-    }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = itemList[position]
-        when (holder) {
-            is DailyViewHolder -> holder.bind(item as ParametersDayRecyclerSection)
-            is WeekViewHolder -> holder.bind(item as DailySection)
-            is HourViewHolder -> holder.bind(item as HourlySection)
-            is HeadViewHolder -> holder.bind(item as HeadRecyclerSection)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = when (holder) {
+        is DailyViewHolder -> holder.bind(itemList[position] as ParametersDayRecyclerSection)
+        is WeekViewHolder -> holder.bind(itemList[position] as DailySection)
+        is HourViewHolder -> holder.bind(itemList[position] as HourlySection)
+        is HeadViewHolder -> holder.bind(itemList[position] as HeadRecyclerSection)
+        else -> {
         }
     }
 
     override fun getItemCount(): Int = itemList.size
 
-    override fun getItemViewType(position: Int): Int {
-        return when (itemList[position]) {
-            is ParametersDayRecyclerSection -> Const.DAILY_SECTION
-            is DailySection -> Const.WEEK_SECTION
-            is HourlySection -> Const.HOUR_SECTION
-            is HeadRecyclerSection -> Const.HEADER_SECTION
+    override fun getItemViewType(position: Int) =
+        when (itemList[position]) {
+            is ParametersDayRecyclerSection -> DAILY_SECTION
+            is DailySection -> WEEK_SECTION
+            is HourlySection -> HOUR_SECTION
+            is HeadRecyclerSection -> HEADER_SECTION
             else -> throw IllegalArgumentException("Invalid type of data $position")
         }
-    }
 
     fun setListener(listener: OnItemClickedListener) {
         this.listener = listener
@@ -133,5 +135,13 @@ class CustomRecyclerAdapter(
 
     interface OnItemClickedListener {
         fun onEntryClicked(data: Int)
+    }
+
+    companion object {
+        const val DAILY_SECTION = 1
+        const val WEEK_SECTION = 5
+        const val HOUR_SECTION = 6
+        const val HEADER_SECTION = 8
+
     }
 }

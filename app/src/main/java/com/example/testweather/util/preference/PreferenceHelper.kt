@@ -6,18 +6,18 @@ import com.example.testweather.R
 import com.example.testweather.const.Const
 
 object PreferenceHelper {
-    const val WEATHER_UNITS = "UNITS"
-    const val WEATHER_CELSIUS = "CELSIUS"
-    const val WEATHER_FAHRENHEIGHT = "FAHRENHEIGHT"
-    const val WEATHER_DAY = "DAY"
-    const val WEATHER_M_S = "M_S"
-    const val WEATHER_UNITS_TEXT = "UNITS_TEXT"
-    const val WEATHER_WIND_SPEED = "SPEED_TEXT"
-    const val WEATHER_M_H = "M_H"
-    const val WEATHER_CITY = "CITY"
-    const val WEATHER_SET_CITY = "CITY_SET"
-    const val WEATHER_SET_LAT = "LAT_SET"
-    const val WEATHER_SET_LON = "LON_SET"
+    private const val WEATHER_UNITS = "UNITS"
+    private const val WEATHER_CELSIUS = "CELSIUS"
+    private const val WEATHER_FAHRENHEIGHT = "FAHRENHEIGHT"
+    private const val WEATHER_DAY = "DAY"
+    private const val WEATHER_M_S = "M_S"
+    private const val WEATHER_UNITS_TEXT = "UNITS_TEXT"
+    private const val WEATHER_WIND_SPEED = "SPEED_TEXT"
+    private const val WEATHER_M_H = "M_H"
+    private const val WEATHER_CITY = "CITY"
+    private const val WEATHER_SET_CITY = "CITY_SET"
+    private const val WEATHER_SET_LAT = "LAT_SET"
+    private const val WEATHER_SET_LON = "LON_SET"
 
 
     fun customPreference(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
@@ -82,7 +82,7 @@ object PreferenceHelper {
         }
 
     // initSettings
-    var SharedPreferences.fahrenheitSet
+    var SharedPreferences.checkFahrenheit
         get() = getBoolean(WEATHER_FAHRENHEIGHT, false)
         set(value) {
             editMe {
@@ -90,7 +90,7 @@ object PreferenceHelper {
             }
         }
 
-    var SharedPreferences.celsiusSet
+    var SharedPreferences.checkCelsius
         get() = getBoolean(WEATHER_CELSIUS, true)
         set(value) {
             editMe {
@@ -98,21 +98,21 @@ object PreferenceHelper {
             }
         }
 
-    var SharedPreferences.m_sSet
+    var SharedPreferences.checkMilesInSeconds
         get() = getBoolean(WEATHER_M_S, true)
         set(value) {
             editMe {
                 it.putBoolean(WEATHER_M_S, value)
             }
         }
-    var SharedPreferences.m_hSet
+    var SharedPreferences.checkMilesInHour
         get() = getBoolean(WEATHER_M_H, false)
         set(value) {
             editMe {
                 it.putBoolean(WEATHER_M_H, value)
             }
         }
-    var SharedPreferences.citySet
+    var SharedPreferences.checkCity
         get() = getBoolean(WEATHER_CITY, false)
         set(value) {
             editMe {
